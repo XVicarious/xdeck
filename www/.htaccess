@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule ^/?decks/([0-9]+)/([0-9]+)/$ /decks.php?format=$1&archetype=$2

@@ -4,8 +4,8 @@ require "mPDO.php";
 include "SqlStatements.php";
 //if (sessionCheck()) {
     $deckJSON = $_POST['deck'];
-    $deckUser = $_POST['userId'];
-    $deckTournament = $_POST['tournament']; // todo: add tournament database
+    $deckUser = 1; //$_POST['userId'];
+    $deckTournament = 0; //$_POST['tournament']; // todo: add tournament database
     $deckDate = date('Y-m-d H:i:s'); // when this deck was made
     $dbh = createPDO();
     try {

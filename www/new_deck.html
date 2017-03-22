@@ -1,0 +1,62 @@
+<head>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+</head>
+<body class="black">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m3">
+                <div class="card-panel white">
+                    <div id="decksList" class="collection"></div>
+                </div>
+            </div>
+            <div class="col s12 m9">
+                <div class="card-panel white">
+                    <div class="row">
+                        <div class="col s1 input-field">
+                            <input id="cardnameQuantity" type="number" min="1" value="1">
+                        </div>
+                        <div class="col s9 input-field">
+                            <input id="cardnameSearch" type="text">
+                            <label for="cardnameSearch">Card Name</label>
+                        </div>
+                        <div class="col s2">
+                            <p>
+                                <input id="isSideboard" type="checkbox" />
+                                <label for="isSideboard">Sideboard</label>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s10 offset-s1">
+                            <i>While typing the card name, press tab to see a list of available cards.</i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-panel white">
+                    <div id="deckView">
+                        <table>
+                            <thead>
+                                <tr><th>number</th><th>card name</th></tr>
+                            </thead>
+                            <tbody id="tableBody" />
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s2 offset-s5">
+                        <a id="saveDeck" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Save Deck</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div id="javascript">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+    <script>
+        requirejs(["./js/common"], function(common) {
+            requirejs(["app/new_deck.js"]);
+        });
+    </script>
+</div>
+</body>

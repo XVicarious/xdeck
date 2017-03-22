@@ -10,7 +10,6 @@
  * @param string optional $username as for PDO, e.g. 'root'
  * @param string optional $password as for PDO
  * @param array optional $options as for PDO
- *
  * @return mPDO object on success
  */
 
@@ -39,7 +38,6 @@ class mPDO extends PDO
  * in order to bind multiple records to a prepared statement in a single execution
  *
  * @param mPDO (PDO) object $dbh
- *
  * @return mPDOStatement object on success
  */
 
