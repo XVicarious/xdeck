@@ -1,0 +1,19 @@
+<head>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+</head>
+<body class="black">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+<div id="javascript">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+    <script>
+        requirejs(["./js/common"], function(common) {
+            requirejs(["app/view"]);
+        });
+    </script>
+</div>
+</body>

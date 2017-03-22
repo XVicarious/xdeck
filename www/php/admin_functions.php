@@ -13,13 +13,15 @@ function sessionCheck() {
     return true;
 }
 
-function createPDO() {
-    $sql_username = 'root';
-    $sql_password = 'root';
+function createPDO($username, $password, $database) {
     try {
-        return new PDO('mysql:host=localhost;dbname=xdeck', $sql_username, $sql_password);
+        return new PDO('mysql:host=localhost;dbname='.$database, $username, $password);
     } catch (Exception $e) {
         error_log($e->getMessage(), 0);
         die('Unable to connect ' . $e->getMessage());
     }
+}
+
+function createPDO2() {
+  return createPDO("root", "root", "xdeck");
 }

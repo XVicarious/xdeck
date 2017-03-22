@@ -2,7 +2,7 @@
 require "admin_functions.php";
 require "mPDO.php";
 include "SqlStatements.php";
-$dbh = createPDO();
+$dbh = createPDO2();
 try {
     $stmt = $dbh->prepare(SqlStatements::LIST_DECKS_FORMAT_ARCHETYPE);
     $formatId = 0;
