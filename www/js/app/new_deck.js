@@ -1,6 +1,6 @@
 var deck = []; // initialize the deck
 
-require(["materialize", "typeahead", "bloodhound"], function(materialize, typeahead) {
+require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(materialize, typeahead) {
     var SCRYFALL_URL = "https://api.scryfall.com";
     var DATE_FORMAT = "YY/MM/DD";
     var TIME_FORMAT = "h:mm:ss";
@@ -24,6 +24,7 @@ require(["materialize", "typeahead", "bloodhound"], function(materialize, typeah
                 $table.append(div);
             }
         });*/
+        console.log(CardCompare.compareCMC({"cmc": 3}, {"cmc": 2}));
         $("input.typeahead").typeahead({minLength: 3, highlight: true}, {
             source: cardDatabase,
             name: "cardname",
@@ -32,9 +33,11 @@ require(["materialize", "typeahead", "bloodhound"], function(materialize, typeah
         }).on("typeahead:selected", function(element, item) {
             addToDeck(item, $("#isSideboard").prop("checked"));
             writeTable();
+            deck.sort(CardCompare.compareCMC);
         }).on("typeahead:autocompleted", function(element, item) {
             addToDeck(item, $("#isSideboard").prop("checked"));
             writeTable();
+            deck.sort(CardCompare.compareCMC);
         });
         $("#saveDeck").click(function() {
             var deckCards = cardsInDeck(); var sideCards = cardsInSideboard();
@@ -77,9 +80,14 @@ require(["materialize", "typeahead", "bloodhound"], function(materialize, typeah
         }
         function writeTable() {
             var $tbody = $("#deckView");
-            $tbody.empty();
+            var $sideboard = $("#sideView");
+            $tbody.empty(); $sideboard.empty();
             for (var i = 0; i < deck.length; i++) {
-                var $tr = $("<div deck-card-id=\"" + i + "\"/>").appendTo($tbody);
+                $editing = $tbody;
+                if (deck[i][3]) {
+                    $editing = $sideboard;
+                }
+                var $tr = $("<div deck-card-id=\"" + i + "\"/>").appendTo($editing);
                 $tr.append("<span class=\"badge left quantity\">" + deck[i][1] + "</span>");
                 $tr.append("<span>" + deck[i][2] + "</span>");
                 $tr.append("<span class=\"secondary-content\">" +

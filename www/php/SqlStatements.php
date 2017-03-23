@@ -22,7 +22,7 @@ class SqlStatements {
 
     const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost FROM cards WHERE cardName LIKE :query';
 
-    const GET_DECK_BY_ID = 'SELECT * FROM dck_deckcards
+    const GET_DECK_BY_ID = 'SELECT dck_deckcards_deckid as deckid, dck_deckcards_cardid as cardid, dck_deckcards_quantity as numberOf, dck_deckcards_sideboard as sideboard, type, cmc, cardName, manaCost, dck_decks_date AS ddate FROM dck_deckcards
         INNER JOIN cards ON dck_deckcards.dck_deckcards_cardid = cards.id
         LEFT JOIN dck_decks ON dck_deckcards.dck_deckcards_deckid = dck_decks.dck_decks_id
         WHERE dck_decks_id = :deckId';

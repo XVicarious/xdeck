@@ -8,7 +8,8 @@ requirejs.config({
         "moment": "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min",
         "typeahead": "https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min",
         "bootstrap": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min",
-        "bloodhound": "https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.min"
+        "bloodhound": "https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.min",
+        "cardcompare": "CardCompare"
     },
     shim: {
         "materialize": {
