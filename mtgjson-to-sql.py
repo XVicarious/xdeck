@@ -31,10 +31,10 @@ def sql_connect():
   cursor = conn.cursor()
 
   try:
-    cursor.execute('use mtg_card_db;')
+    cursor.execute('use xdeck;')
   except pymysql.err.InternalError:
-    cursor.execute('CREATE DATABASE mtg_card_db;');
-    cursor.execute('use mtg_card_db;')
+    cursor.execute('CREATE DATABASE xdeck;');
+    cursor.execute('use xdeck;')
 
   return conn, cursor
 
@@ -60,20 +60,8 @@ def padDate(date):
   return '"' + date + '"'
 
 def setup_sql_db(cursor):
-  cursor.execute('SHOW TABLES IN mtg_card_db;');
-
+  cursor.execute('SHOW TABLES IN xdeck;');
   current_tables = cursor.fetchall()
-  #print(current_tables)
-  if ('sets',) not in current_tables:
-    cursor.execute("CREATE TABLE sets ("+
-    "id INT PRIMARY KEY AUTO_INCREMENT,"+
-    " setName varchar(255),"+
-    "code varchar(8),"+
-    "setType varchar(16),"+
-    "block varchar(255),"+
-    "onlineOnly BIT)")
-    #"PRIMARY KEY (id),"+
-    #"UNIQUE INDEX id_UNIQUE (id ASC));")
   if ('cards',) not in current_tables:
     cursor.execute("CREATE TABLE cards ("+
     "id INT PRIMARY KEY AUTO_INCREMENT,"+
@@ -96,30 +84,6 @@ def setup_sql_db(cursor):
     " modern SET('Banned','Restricted','Legal'),"+
     " standard SET('Banned','Restricted','Legal'),"+
     " commander SET('Banned','Restricted','Legal'))")
-    #"PRIMARY KEY (id),"+
-    #"UNIQUE INDEX id_UNIQUE (id ASC));")
-  if ('card_set_info',) not in current_tables:
-    cursor.execute("CREATE TABLE card_set_info ("+
-    "_cardId INT,"+
-    " _setId INT,"+
-    " rarity varchar(32),"+
-    " flavor TEXT,"+
-    " artist varchar(255),"+
-    " number varchar(32),"+
-    " multiverseid INT UNSIGNED,"+
-    " variations varchar(255),"+
-    " watermark varchar(255),"+
-    " border varchar(16),"+
-    " timeshifted BIT,"+
-    " releaseDate DATE,"+
-    " starter BIT,"+
-    " originalText TEXT,"+
-    " originalType varchar(255),"+
-    " source varchar(255),"+
-    " imageName varchar(255),"+
-    " CONSTRAINT cardID PRIMARY KEY(_cardId, _setId, imageName),"+
-    " FOREIGN KEY (_cardId) REFERENCES cards(id),"+
-    " FOREIGN KEY (_setId) REFERENCES sets(id) );")
 
 def parseSets(data, cursor):
   for key in list(data.keys()):
@@ -208,6 +172,6 @@ conn, cursor = sql_connect()
 data = load_mtgjson()
 drop_sql_tables(cursor);
 setup_sql_db(cursor)
-parseSets(data, cursor)
+#parseSets(data, cursor)
 parseCards(data, cursor)
 quit(conn)
