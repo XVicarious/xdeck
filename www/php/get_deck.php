@@ -6,7 +6,7 @@ try {
     $stmt = $dbh->prepare(SqlStatements::GET_DECK_BY_ID);
     $stmt->bindParam(':deckId', $_GET['id'], PDO::PARAM_INT);
     $stmt->execute();
-    echo json_encode($stmt->fetchAll());
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
 } catch (PDOException $e) {
-    
+
 }

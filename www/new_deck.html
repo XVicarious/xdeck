@@ -103,11 +103,11 @@ p + p {
 <body class="black">
     <div class="container">
         <div class="row">
-            <div class="col s12 m12 l3">
+            <!--<div class="col s12 m12 l3">
                 <div class="card-panel white">
                     <div id="decksList" class="collection"></div>
                 </div>
-            </div>
+            </div>-->
             <div class="col s12 m12 l3">
                 <div class="card-panel white">
                     <div class="row">
@@ -132,14 +132,7 @@ p + p {
                     </div>
                 </div>
                 <div class="card-panel white">
-                    <div id="deckView">
-                        <table>
-                            <thead>
-                                <tr><th>number</th><th>card name</th></tr>
-                            </thead>
-                            <tbody id="tableBody" />
-                        </table>
-                    </div>
+                    <div id="deckView" class="collection"></div>
                 </div>
                 <div class="row">
                     <div class="col s2 offset-s5">
@@ -149,12 +142,19 @@ p + p {
             </div>
         </div>
     </div>
-<div id="javascript">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
-    <script>
-        requirejs(["./js/common"], function(common) {
-            requirejs(["app/new_deck"]);
-        });
-    </script>
-</div>
+    <div id="modalQuantity" class="modal">
+        <div class="modal-content">
+            <h4></h4>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+    <div id="javascript">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+        <script>
+            requirejs(["./js/common"], function(common) {
+                requirejs(["app/new_deck"]);
+            });
+        </script>
+    </div>
 </body>

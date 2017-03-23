@@ -20,8 +20,11 @@ class SqlStatements {
                                              INNER JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes.dck_archetypes_name
                                              ORDER BY dck_decks_date DESC';
 
-    const AUTOCOMPLETE_CARDS = 'SELECT id, cardName FROM cards WHERE cardName LIKE :query';
+    const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost FROM cards WHERE cardName LIKE :query';
 
-    const GET_DECK_BY_ID = 'SELECT * FROM dck_deckcards LEFT JOIN dck_decks ON dck_deckcards.dck_deckcards_deckid = dck_decks.dck_decks_id WHERE dck_decks_id = :deckId';
+    const GET_DECK_BY_ID = 'SELECT * FROM dck_deckcards
+        INNER JOIN cards ON dck_deckcards.dck_deckcards_cardid = cards.id
+        LEFT JOIN dck_decks ON dck_deckcards.dck_deckcards_deckid = dck_decks.dck_decks_id
+        WHERE dck_decks_id = :deckId';
 
 }
