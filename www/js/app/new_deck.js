@@ -1,8 +1,6 @@
 var deck = []; // initialize the deck
-require(['jquery', 'materialize', 'typeahead', 'bloodhound', 'cardcompare', 'convertcost'], function ($) {
-  var SCRYFALL_URL = 'https://api.scryfall.com';
+require(['jquery', 'moment', 'materialize', 'typeahead', 'bloodhound', 'cardcompare', 'convertcost'], function ($, moment) {
   var DATE_FORMAT = 'YY/MM/DD';
-  var TIME_FORMAT = 'h:mm:ss';
   $(function () {
     var cardDatabase = new Bloodhound({
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('cardName'),
@@ -13,16 +11,15 @@ require(['jquery', 'materialize', 'typeahead', 'bloodhound', 'cardcompare', 'con
       },
       limit: 15
     });
-    /* $.post('php/list_decks.php', function(data) {
-        data = JSON.parse(data);
-        var $table = $('#decksList');
-        for(var i = 0; i < data.length; i++) {
-            var div = '<a class="collection-item">';
-            //div += moment(data[i]['dck_decks_date']).format(DATE_FORMAT);
-            div += '</a>'
-            $table.append(div);
-        }
-    }); */
+    $.post('php/list_decks.php', function (data) {
+      data = JSON.parse(data);
+      var $table = $('#decksList');
+      for (var i = 0; i < data.length; i++) {
+        $table.append('<a class="collection-item">' +
+                       moment(data[i]['dck_decks_date']).format(DATE_FORMAT) +
+                       '</a>');
+      }
+    });
     $('input.typeahead').typeahead({minLength: 3, highlight: true}, {
       source: cardDatabase,
       name: 'cardname',
