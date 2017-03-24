@@ -1,5 +1,6 @@
 <head>
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="css/mana.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
     <style>
@@ -9,6 +10,9 @@
         }
         .collection-item {
             padding-left:20px !important
+        }
+        .ms {
+            color:black
         }
     </style>
 </head>
@@ -24,10 +28,10 @@
             <div class="col s12 card-panel">
                 <div>
                     <div id="deck" class="collection with-header">
-                        <div class="collection-header">Mainboard</div>
+                        <div class="collection-header">Mainboard<span id="deckcount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom"></span></div>
                     </div>
                     <div id="sideboard" class="collection with-header">
-                        <div class="collection-header">Sideboard</div>
+                        <div class="collection-header">Sideboard<span id="sidecount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom"></span></div>
                     </div>
                 </div>
             </div>

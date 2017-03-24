@@ -10,7 +10,7 @@ include "SqlStatements.php";
     $dbh = createPDO2();
     try {
         // [cardId, cardQuantity, cardName, sideboard]
-        $deckObject = json_decode($deckJSON);
+        $deckObject = json_decode($deckJSON, true);
         $zero = 0;
         // First, create the deck
         $stmt = $dbh->prepare(SqlStatements::INSERT_NEW_DECK);
@@ -22,15 +22,15 @@ include "SqlStatements.php";
         $stmt->execute();
         $last_id = $dbh->lastInsertId();
         foreach ($deckObject as $card) {
-            echo $card[0],$card[1],$card[2],$card[3];
             // Now put the card into the deck
             $stmt = $dbh->prepare(SqlStatements::INSERT_CARD_INTO_DECK);
-            $stmt->bindParam(':cardId', $card[0], PDO::PARAM_INT);
+            $stmt->bindParam(':cardId', $card["id"], PDO::PARAM_INT);
             $stmt->bindParam(':deckId', $last_id, PDO::PARAM_INT);
-            $stmt->bindParam(':cardQuantity', $card[1], PDO::PARAM_INT);
-            $stmt->bindParam(':isSideboard', $card[3], PDO::PARAM_BOOL);
+            $stmt->bindParam(':cardQuantity', $card["numberOf"], PDO::PARAM_INT);
+            $stmt->bindParam(':isSideboard', $card["sideboard"], PDO::PARAM_BOOL);
             $stmt->execute();
-            $stmt->debugDumpParams();
+            echo $stmt->errorCode();
+            print_r($stmt->errorInfo());
         }
     } catch (PDOException $e) {
         error_log($e->getMessage(), 0);

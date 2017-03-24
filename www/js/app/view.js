@@ -1,8 +1,4 @@
-require(["jquery", "cardcompare"], function($) {
-    var cardTypes = ["Creature", "Planeswalker", "Instant", "Sorcery",
-                     "Artifact", "Enchantment", "Land"];
-    var colors = "WUBRG";
-    var nonColors = "LAC";
+require(["jquery", "cardcompare", "materialize", "convertcost"], function($) {
     var parts = window.location.search.substr(1).split("&");
     var $_GET = {};
     for (var i = 0; i < parts.length; i++) {
@@ -13,53 +9,60 @@ require(["jquery", "cardcompare"], function($) {
         $.get("php/get_deck.php", {id: $_GET['id']}, function(data) {
             data = JSON.parse(data);
             data.sort(CardCompare.compareClassic);
-            function compareColors(color1, color2) {
-                var color1s = CardCompare.getColors(color1); var color2s = CardCompare.getColors(color2);
-                var priority1; var priority2;
-                if (color1s.length + color2s.length == 0) {
-                    color1s = color1; color2s = color2;
-                    for (var u = 0; u < Math.min(color1s.length, color2s.length); u++) {
-                        priority1 = nonColors.indexOf(color1s.charAt(u));
-                        priority2 = nonColors.indexOf(color2s.charAt(u));
-                        if (priority1 != priority2) {
-                            return priority1 < priority2 ? -1 : 1;
-                        }
-                    }
-                    return 0;
-                }
-                if (color1s.length < color2s.length) {
-                    return -1;
-                } else if (color1s.length > color2s.length) {
-                    return 1;
-                } else {
-                    for (var u = 0; u < Math.min(color1s.length, color2s.length); u++) {
-                        priority1 = colors.indexOf(color1s.charAt(u));
-                        priority2 = colors.indexOf(color2s.charAt(u));
-                        if (priority1 != priority2) {
-                            return priority1 < priority2 ? -1 : 1;
-                        }
-                    }
-                    return 0;
-                }
-            }
             $("#deckDate").text(data[0]["ddate"]);
             var $deck = $("#deck");
             var $side = $("#sideboard");
             var $editing = $deck;
+            var deckCount = 0; var sideCount = 0;
+            var typeCounts = [{"Creature":0,"Planeswalker":0,"Instant":0,"Sorcery":0,"Artifact":0,"Enchantment":0,"Land":0},
+                              {"Creature":0,"Planeswalker":0,"Instant":0,"Sorcery":0,"Artifact":0,"Enchantment":0,"Land":0}];
             for (var i = 0; i < data.length; i++) {
                 var isSideboard = Boolean(parseInt(data[i]["sideboard"]));
                 $editing = $deck;
                 if (isSideboard) {
                     $editing = $side;
+                    sideCount += parseInt(data[i]["numberOf"]);
+                } else {
+                    deckCount += parseInt(data[i]["numberOf"]);
                 }
+                for (var j = 0; j < CardCompare.cardTypes.length; j++) {
+                    if (data[i]["type"].includes(CardCompare.cardTypes[j])) {
+                        typeCounts[Number(isSideboard)][CardCompare.cardTypes[j]] += parseInt(data[i]["numberOf"]);
+                        break;
+                    }
+                }
+                if (data[i]["manaCost"] == null) {
+                    data[i]["manaCost"] = "";
+                }
+                var newCost = ConvertCost.parse(data[i]["manaCost"]);
                 $editing.append(
                     "<a class=\"collection-item\">" +
                     "<span class=\"badge left\">" + data[i]["numberOf"] + "</span>" +
                     "<span>" + data[i]["cardName"] + "</span>" +
-                    "<span class=\"secondary-content\">" + data[i]["manaCost"] + "</span></span>" +
+                    "<span class=\"secondary-content\">" + newCost + "</span></span>" +
                     "</a>"
                 );
             }
+            var tooltipDeck = "";
+            var tooltipSide = "";
+            for (var i = 0; i < CardCompare.cardTypes.length; i++) {
+                var cardType = CardCompare.cardTypes[i];
+                var countDeck = typeCounts[0][cardType];
+                var countSide = typeCounts[1][cardType];
+                if (countDeck != 0) {
+                    tooltipDeck += (cardType + ": " + countDeck + "<br/>");
+                }
+                if (countSide != 0) {
+                    tooltipSide += (cardType + ": " + countSide + "<br/>")
+                }
+            }
+            $deckcount = $("#deckcount");
+            $sidecount = $("#sidecount");
+            $deckcount.attr("data-tooltip", tooltipDeck);
+            $sidecount.attr("data-tooltip", tooltipSide)
+            $(".tooltipped").tooltip({delay:50,html:true});
+            $deckcount.text(deckCount);
+            $sidecount.text(sideCount);
         });
     });
 });

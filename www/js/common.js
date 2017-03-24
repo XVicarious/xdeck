@@ -9,7 +9,8 @@ requirejs.config({
         "typeahead": "https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min",
         "bootstrap": "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min",
         "bloodhound": "https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.min",
-        "cardcompare": "CardCompare"
+        "cardcompare": "CardCompare",
+        "convertcost": "ConvertCost"
     },
     shim: {
         "materialize": {
@@ -19,7 +20,7 @@ requirejs.config({
             deps: ["hammer"]
         },
         "typeahead": {
-            deps: ["jquery"],
+            deps: ["jquery", "hammer"],
             init: function($) {
               return require.s.contexts._.registry['typeahead.js'].factory($);
             }

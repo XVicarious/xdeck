@@ -1,6 +1,6 @@
 var deck = []; // initialize the deck
 
-require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(materialize, typeahead) {
+require(["materialize", "typeahead", "bloodhound", "cardcompare", "convertcost"], function(materialize, typeahead) {
     var SCRYFALL_URL = "https://api.scryfall.com";
     var DATE_FORMAT = "YY/MM/DD";
     var TIME_FORMAT = "h:mm:ss";
@@ -24,7 +24,6 @@ require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(mate
                 $table.append(div);
             }
         });*/
-        console.log(CardCompare.compareCMC({"cmc": 3}, {"cmc": 2}));
         $("input.typeahead").typeahead({minLength: 3, highlight: true}, {
             source: cardDatabase,
             name: "cardname",
@@ -32,12 +31,12 @@ require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(mate
             limit: 15
         }).on("typeahead:selected", function(element, item) {
             addToDeck(item, $("#isSideboard").prop("checked"));
+            deck.sort(CardCompare.compareClassic);
             writeTable();
-            deck.sort(CardCompare.compareCMC);
         }).on("typeahead:autocompleted", function(element, item) {
             addToDeck(item, $("#isSideboard").prop("checked"));
+            deck.sort(CardCompare.compareClassic);
             writeTable();
-            deck.sort(CardCompare.compareCMC);
         });
         $("#saveDeck").click(function() {
             var deckCards = cardsInDeck(); var sideCards = cardsInSideboard();
@@ -63,19 +62,19 @@ require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(mate
                 $(this).text("1");
             }
             var deckCardId = $(this).parent("div").attr("deck-card-id");
-            deck[deckCardId][1] = parseInt($(this).text());
+            deck[deckCardId]["numberOf"] = parseInt($(this).text());
             writeTable();
         });
         function addToDeck(item, isSideboard) {
             for (var i = 0; i < deck.length; i++) {
-                if (deck[i][0] == item.id && deck[i][3] == isSideboard) {
+                if (deck[i]["id"] == item.id && deck[i]["sideboard"] == isSideboard) {
                     break;
                 }
             }
             if (i < deck.length) {
-                deck[i][1] += parseInt($("#cardnameQuantity").val());
+                deck[i]["numberOf"] += parseInt($("#cardnameQuantity").val());
             } else {
-                deck.push([item.id, parseInt($("#cardnameQuantity").val()), item.cardName, isSideboard, item.manaCost]);
+                deck.push({"id":item.id, "numberOf":parseInt($("#cardnameQuantity").val()), "cardName":item.cardName, "sideboard":isSideboard, "manaCost":item.manaCost, "type":item.type, "cmc":item.cmc});
             }
         }
         function writeTable() {
@@ -84,14 +83,14 @@ require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(mate
             $tbody.empty(); $sideboard.empty();
             for (var i = 0; i < deck.length; i++) {
                 $editing = $tbody;
-                if (deck[i][3]) {
+                if (deck[i]["sideboard"]) {
                     $editing = $sideboard;
                 }
                 var $tr = $("<div deck-card-id=\"" + i + "\"/>").appendTo($editing);
-                $tr.append("<span class=\"badge left quantity\">" + deck[i][1] + "</span>");
-                $tr.append("<span>" + deck[i][2] + "</span>");
+                $tr.append("<span class=\"badge left quantity\">" + deck[i]["numberOf"] + "</span>");
+                $tr.append("<span>" + deck[i]["cardName"] + "</span>");
                 $tr.append("<span class=\"secondary-content\">" +
-                           "<span id=\"manaCost\">" + deck[i][4] + "</span>" +
+                           "<span id=\"manaCost\">" + ConvertCost.parse(deck[i]["manaCost"]) + "</span>" +
                            "<a href=\"#\" class=\"deck-card\" deck-card-id=\"" + i + "\"><i class=\"material-icons\">delete</i></a>"+
                            "</span>");
             }
@@ -99,8 +98,8 @@ require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(mate
         function cardsInDeck() {
             var cards = 0;
             for (var i = 0; i < deck.length; i++) {
-                if (!deck[i][3]) {
-                    cards += deck[i][1];
+                if (!deck[i]["sideboard"]) {
+                    cards += deck[i]["numberOf"];
                 }
             }
             return cards;
@@ -108,8 +107,8 @@ require(["materialize", "typeahead", "bloodhound", "cardcompare"], function(mate
         function cardsInSideboard() {
             var cards = 0;
             for (var i = 0; i < deck.length; i++) {
-                if (deck[i][3]) {
-                    cards += deck[i][1];
+                if (deck[i]["sideboard"]) {
+                    cards += deck[i]["numberOf"];
                 }
             }
             return cards;
