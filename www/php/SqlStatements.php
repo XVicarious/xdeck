@@ -27,9 +27,11 @@ class SqlStatements {
 
     const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost, cmc, type FROM cards WHERE cardName LIKE :query';
 
-    const GET_DECK_BY_ID = 'SELECT dck_deckcards_deckid as deckid, dck_deckcards_cardid as cardid, dck_deckcards_quantity as numberOf, dck_deckcards_sideboard as sideboard, type, cmc, cardName, manaCost, dck_decks_date AS ddate, colors FROM dck_deckcards
+    const GET_DECK_BY_ID = 'SELECT dck_deckcards_deckid as deckid, dck_deckcards_cardid as cardid, dck_deckcards_quantity as numberOf, dck_deckcards_sideboard as sideboard, type, cmc, cardName, manaCost, dck_decks_date AS ddate, colors, dck_formats_name AS formatName, dck_archetypes_name AS archetypeName, dck_decks_formatid AS formatId, dck_decks_archetypeid AS archetypeId FROM dck_deckcards
         INNER JOIN cards ON dck_deckcards.dck_deckcards_cardid = cards.id
         LEFT JOIN dck_decks ON dck_deckcards.dck_deckcards_deckid = dck_decks.dck_decks_id
+        LEFT JOIN dck_formats ON dck_decks_formatid = dck_formats.dck_formats_id
+        LEFT JOIN dck_archetypes ON dck_decks_archetypeid = dck_archetypes.dck_archetypes_id
         WHERE dck_decks_id = :deckId';
 
     const GET_TOP_CARDS_FORMAT = 'SELECT dck_deckcards_cardid AS id, dck_deckcards_quantity AS numberOf, cardName FROM dck_deckcards

@@ -10,6 +10,10 @@ require(["jquery", "cardcompare", "materialize", "convertcost"], function($) {
             data = JSON.parse(data);
             data.sort(CardCompare.compareClassic);
             $("#deckDate").text(data[0]["ddate"]);
+            $("#formatName").text(data[0]["formatName"])
+                            .attr("href", "format.html?id=" + data[0]["formatId"]);
+            $("#archetypeName").text(data[0]["archetypeName"])
+                               .attr("href", "archetype.html?id=" + data[0]["archetypeId"]);
             var $deck = $("#deck");
             var $side = $("#sideboard");
             var $editing = $deck;
