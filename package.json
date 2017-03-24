@@ -1,5 +1,5 @@
 {
   "standard": {
-    "globals": [ "$", "Bloodhound", "CardCompare", "ConvertCost" ]
+    "globals": [ "requirejs", "$", "Bloodhound", "CardCompare", "ConvertCost" ]
   }
 }
