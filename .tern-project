@@ -1,0 +1,17 @@
+{
+  "libs": [
+    "browser",
+    "jquery"
+  ],
+  "loadEagerly": [
+    "www/js/**/*.js"
+  ],
+  "plugins": {
+    "requirejs": {
+      "baseURL": "www/js",
+      "paths": "",
+      "override": ""
+    }
+  },
+  "dontLoad": []
+}

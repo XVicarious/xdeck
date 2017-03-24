@@ -1,14 +1,19 @@
+/**
+ * @class Compare two card objects with cmc, cardName, type, sideboard, colors
+ */
 var CardCompare = {
     cardTypes: ["Creature", "Planeswalker", "Instant", "Sorcery", "Artifact", "Enchantment", "Land"],
     colors: "WUBRG",
     nonColors: "LAC",
+    /**
+     * @function
+     * @name compareCMC
+     * @argument card1 the first card to compare
+     * @argument card2 the second card to compare
+     * @return a negative value if card2's cmc is greater, positive if vice-versa, or 0 if they're the same
+     */
     compareCMC: function(card1, card2) {
-        if (card1.cmc > card2.cmc) {
-            return 1;
-        } else if (card1.cmc < card2.cmc) {
-            return -1;
-        }
-        return 0;
+        return card1.cmc - card2.cmc;
     },
     compareName: function(card1, card2) {
         if (card1.cardName > card2.cardName) {
