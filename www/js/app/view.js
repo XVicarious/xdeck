@@ -41,7 +41,7 @@ require(['jquery', 'cardcompare', 'materialize', 'convertcost'], function ($) {
         var newCost = ConvertCost.parse(data[i]['manaCost']);
         $editing.append(
             '<a class="collection-item">' +
-            '<span class="badge left">' + data[i]['numberOf'] + '</span>' +
+            '<span class="badge left left-badge">' + data[i]['numberOf'] + '</span>' +
             '<span>' + data[i]['cardName'] + '</span>' +
             '<span class="secondary-content">' + newCost + '</span></span>' +
             '</a>'

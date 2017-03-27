@@ -20,9 +20,15 @@ class SqlStatements {
                                              INNER JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes.dck_archetypes_name
                                              ORDER BY dck_decks_date DESC';
 
+    const LIST_DECKS_FORMAT = 'SELECT dck_decks_id AS id, dck_formats_name AS format, dck_archetypes_name as archetype, dck_decks_date AS ddate FROM dck_decks
+                                             LEFT JOIN dck_formats ON dck_decks.dck_decks_formatid = dck_formats.dck_formats_id
+                                             LEFT JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes.dck_archetypes_id
+                                             WHERE dck_decks_formatid = :formatId
+                                             ORDER BY dck_decks_date DESC';
+
     const LIST_ALL_DECKS = 'SELECT dck_decks_id AS id, dck_formats_name AS format, dck_archetypes_name AS archetype, dck_decks_date AS ddate FROM dck_decks
-                                INNER JOIN dck_formats ON dck_decks.dck_decks_formatid = dck_formats.dck_formats_name
-                                INNER JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes.dck_archetypes_name
+                                LEFT JOIN dck_formats ON dck_decks.dck_decks_formatid = dck_formats.dck_formats_id
+                                LEFT JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes.dck_archetypes_id
                                 ORDER BY dck_decks_date DESC';
 
     const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost, cmc, type FROM cards WHERE cardName LIKE :query';
@@ -36,6 +42,7 @@ class SqlStatements {
 
     const GET_TOP_CARDS_FORMAT = 'SELECT dck_deckcards_cardid AS id, dck_deckcards_quantity AS numberOf, cardName FROM dck_deckcards
                                       INNER JOIN cards ON dck_deckcards.dck_deckcards_cardid = cards.id
-                                      LEFT JOIN dck_decks ON dck_deckcards.dck_deckcards_deckid = dck_decks.dck_decks_id AND dck_decks.dck_decks_formatid = :formatId';
+                                      LEFT JOIN dck_decks ON dck_deckcards.dck_deckcards_deckid = dck_decks.dck_decks_id AND dck_decks.dck_decks_formatid = :formatId
+                                      WHERE dck_decks_formatid = :formatId';
 
 }

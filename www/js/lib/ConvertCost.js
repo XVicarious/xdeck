@@ -1,5 +1,6 @@
 var ConvertCost = {
-  colorCodes: ['W', 'U', 'B', 'R', 'G', 'C', 'X', 'Y', 'Z'],
+  colorCodes: ['W', 'U', 'B', 'R', 'G', 'C', 'X', 'Y', 'Z', 'P'],
+  // todo: this needs support for infinity symbols, and tap symbols
   parse: function (string) {
     var idChars = ['/', '{', '}']; // characters we don't want to add to our build
     if (string == null || !string.trim()) { // if the string is null or empty
@@ -17,10 +18,10 @@ var ConvertCost = {
         if (ConvertCost.colorCodes.indexOf(currentChar) > -1 || (currentChar >= '0' && currentChar <= '9')) { // if the next character is a color, or C, or X, Y, Z, or if its a digit
           if (build.trim()) { // if build has characters in it
             build += currentChar; // add the current character to the build
-            newFangledString += (iStart + build + (string.charAt(i - 1) === '/' ? iSplit : '') + iEnd); // compile the mana symbols, and if the last character was a /, it was split cost so add iSplit, otherwise don't add anything
+            newFangledString += (iStart + build.toLowerCase() + ((string.charAt(i - 1) === '/' && currentChar !== 'P') ? iSplit : '') + iEnd); // compile the mana symbols, and if the last character was a / and not P, it was split cost so add iSplit, otherwise don't add anything
             build = ''; // we are done with this symbol, reset build for the next one
           } else { // build is empty, meaning it is a short, easy symbol
-            newFangledString += (iStart + currentChar + iEnd); // fix up this symbol, it was a short one
+            newFangledString += (iStart + currentChar.toLowerCase() + iEnd); // fix up this symbol, it was a short one
           }
         }
       } else { // it is a long one, take a seat

@@ -1,6 +1,6 @@
 var deck = []; // initialize the deck
-require(['jquery', 'moment', 'materialize', 'typeahead', 'bloodhound', 'cardcompare', 'convertcost'], function ($, moment) {
-  var DATE_FORMAT = 'YY/MM/DD';
+require(['moment', 'typeahead', 'bloodhound', 'cardcompare', 'convertcost', 'materialize'], function () {
+  // var DATE_FORMAT = 'YY/MM/DD';
   $(function () {
     var cardDatabase = new Bloodhound({
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('cardName'),
@@ -11,7 +11,7 @@ require(['jquery', 'moment', 'materialize', 'typeahead', 'bloodhound', 'cardcomp
       },
       limit: 15
     });
-    $.post('php/list_decks.php', function (data) {
+    /* $.post('php/list_decks.php', function (data) {
       data = JSON.parse(data);
       var $table = $('#decksList');
       for (var i = 0; i < data.length; i++) {
@@ -19,7 +19,7 @@ require(['jquery', 'moment', 'materialize', 'typeahead', 'bloodhound', 'cardcomp
                        moment(data[i]['dck_decks_date']).format(DATE_FORMAT) +
                        '</a>');
       }
-    });
+    }); */
     $('input.typeahead').typeahead({minLength: 3, highlight: true}, {
       source: cardDatabase,
       name: 'cardname',
@@ -35,15 +35,15 @@ require(['jquery', 'moment', 'materialize', 'typeahead', 'bloodhound', 'cardcomp
       writeTable();
     });
     $('#saveDeck').click(function () {
-      var deckCards = cardsInDeck(); var sideCards = cardsInSideboard();
+      var deckCards = cardsInDeck(); var sideCards = cardsInDeck(true);
       if (deckCards >= 60 && sideCards <= 15) {
         $.post('php/new_deck.php', {deck: JSON.stringify(deck)}, function (data) {
-          console.log('Deck saved.');
+          // Materialize.toast('Deck saved.', 4000);
         });
       } else if (deckCards < 60) {
-        console.log('Not enough cards in deck. Allowed: 60 or more. You have: ' + deckCards);
+        // Materialize.toast('Not enough cards in deck. Allowed: 60 or more. You have: ' + deckCards, 4000);
       } else if (sideCards > 15) {
-        console.log('Too many cards in sideboard. Allowed: 15 or less. You have: ' + sideCards);
+        // Materialize.toast('Too many cards in sideboard. Allowed: 15 or less. You have: ' + sideCards, 4000);
       }
     });
     $(document).on('click', '.deck-card', function () {
@@ -76,34 +76,37 @@ require(['jquery', 'moment', 'materialize', 'typeahead', 'bloodhound', 'cardcomp
     function writeTable () {
       var $tbody = $('#deckView');
       var $sideboard = $('#sideView');
+      var $editing;
       $tbody.empty(); $sideboard.empty();
+      $tbody.append(
+        '<div class="collection-header">Mainboard</div>'
+      );
+      $sideboard.append(
+        '<div class="collection-header">Sideboard</div>'
+      );
       for (var i = 0; i < deck.length; i++) {
-        var $editing = $tbody;
         if (deck[i]['sideboard']) {
           $editing = $sideboard;
+        } else {
+          $editing = $tbody;
         }
-        var $tr = $('<div deck-card-id="' + i + '"/>').appendTo($editing);
-        $tr.append('<span class="badge left quantity">' + deck[i]['numberOf'] + '</span>');
-        $tr.append('<span>' + deck[i]['cardName'] + '</span>');
-        $tr.append('<span class="secondary-content">' +
-                   '<span id="manaCost">' + ConvertCost.parse(deck[i]['manaCost']) + '</span>' +
-                   '<a href="#" class="deck-card" deck-card-id="' + i + '"><i class="material-icons">delete</i></a>' +
-                   '</span>');
+        $editing.append(
+                       '<div class="collection-item" deck-card-id="' + i + '">' +
+                         '<span class="badge left quantity">' + deck[i]['numberOf'] + '</span>' +
+                         '<span>' + deck[i]['cardName'] + '</span>' +
+                         '<span class="secondary-content">' +
+                           '<span>' + ConvertCost.parse(deck[i]['manaCost']) + '</span>' +
+                           // '<a href="#" class="deck-card" deck-card-id="' + i + '"><i class="material-icons">delete</i></a>' +
+                         '</span>' +
+                       '</div>'
+                 );
       }
     }
-    function cardsInDeck () {
+    function cardsInDeck (sideboard) {
+      sideboard = (typeof sideboard !== 'undefined') ? sideboard : false;
       var cards = 0;
       for (var i = 0; i < deck.length; i++) {
-        if (!deck[i]['sideboard']) {
-          cards += deck[i]['numberOf'];
-        }
-      }
-      return cards;
-    }
-    function cardsInSideboard () {
-      var cards = 0;
-      for (var i = 0; i < deck.length; i++) {
-        if (deck[i]['sideboard']) {
+        if (deck[i]['sideboard'] === sideboard) {
           cards += deck[i]['numberOf'];
         }
       }
