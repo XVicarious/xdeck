@@ -1,5 +1,11 @@
 {
+  "name": "xdeck",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A Metagame Analysis Website for Magic: the Gathering",
+  "repository": "https://github.com/xvicarious/xdeck",
+  "license": "",
   "standard": {
-    "globals": [ "requirejs", "$", "Bloodhound", "CardCompare", "ConvertCost" ]
+    "globals": [ "CardCompare", "ConvertCost" ]
   }
 }
