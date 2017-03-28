@@ -12,25 +12,23 @@ require(['jquery', 'moment'], function ($, moment) {
     }
   });
   /* top cards for modern */
-  topModernCards = JSON.parse(topModernCards);
-  var $topModern = $('#topModernCards');
-  for (var i = 0; i < topModernCards.length; i++) {
+  /* var $topModern = $('#topModernCards');
+  for (var i = 0; i < aTopModernCards.length; i++) {
     $topModern.append(
-      '<a href="view_card.html?id=' + topModernCards[i]['id'] +
-      '" class="collection-item">' + topModernCards[i]['cardName'] +
+      '<a href="view_card.html?id=' + aTopModernCards[i]['id'] +
+      '" class="collection-item">' + aTopModernCards[i]['cardName'] +
       '<span class="badge new" data-badge-caption="copies">' +
-      topModernCards[i]['numberOf'] + '</span></a>'
+      aTopModernCards[i]['numberOf'] + '</span></a>'
     );
-  }
+} */
   /* top cards for pauper */
-  topPauperCards = JSON.parse(topPauperCards);
   var $topPauper = $('#topPauperCards');
-  for (var i = 0; i < topPauperCards.length; i++) {
+  for (i = 0; i < aTopPauperCards.length; i++) {
     $topPauper.append(
-      '<a href="view_card.html?id=' + topPauperCards[i]['id'] +
-      '" class="collection-item">' + topPauperCards[i]['cardName'] +
+      '<a href="view_card.html?id=' + aTopPauperCards[i]['id'] +
+      '" class="collection-item">' + aTopPauperCards[i]['cardName'] +
       '<span class="badge new" data-badge-caption="copies">' +
-      topPauperCards[i]['numberOf'] + '</span></a>'
+      aTopPauperCards[i]['numberOf'] + '</span></a>'
     );
   }
 });

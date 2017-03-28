@@ -12,6 +12,14 @@
     <div class="col s4">
         <div id="topModernCards" class="collection with-header card-panel">
             <div class="collection-header"><h5>Top Modern Cards</h5></div>
+            <?php
+            foreach (Database::getTopCards(1) as $card) {
+                $cardString = '<a href="?action=card&id=' . $card['id'] . '" class="collection-item">' .
+                               $card['cardName'] . '<span class="badge new" data-badge-caption="copies">' .
+                               $card['numberOf'] . '</span></a>';
+                echo $cardString;
+            }
+            ?>
         </div>
     </div>
     <div class="col s4">
@@ -20,11 +28,3 @@
         </div>
     </div>
 </div>
-<script>
-    requirejs(['./js/common'], function (common) {
-      var topPauperCards = '<?php echo Database::getTopCards(2) ?>';
-      var topModernCards = '<?php echo Database::getTopCards(1) ?>';
-      var topLegacyCards = '<?php echo Database::getTopCards(3) ?>';
-      requirejs(['app/index']);
-    });
-</script>

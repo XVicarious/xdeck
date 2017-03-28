@@ -121,12 +121,18 @@ class Database
             $stmt = $dbh->prepare(self::GET_DECK_BY_ID);
             $stmt->bindParam(':deckId', $deckId, PDO::PARAM_INT);
             $stmt->execute();
-            return json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $pdoe) {
             error_log($pdoe->getMessage(), 0);
         }
     }
 
+    /**
+     * @param int $formatId id of the format to fetch cards for
+     * @param string[] $types what types of cards you want
+     * @param int $limit how many of the top cards you want
+     * @return [] array of size $limit of cards
+     */
     public static function getTopCards($formatId, $types = [], $limit = 10)
     {
         try {
@@ -154,15 +160,13 @@ class Database
                 $index = self::cardExists($newCards, intval($card['id']));
                 if ($index > -1) {
                     $newCards[$index]['numberOf'] += intval($card['numberOf']);
+                    $quantityCards[$index] += intval($card['numberOf']);
                 } else {
-                    // fixme: strings with ' are broken
                     array_push($newCards, ['id'=>intval($card['id']),
                                            'numberOf'=>intval($card['numberOf']),
                                            'cardName'=>$card['cardName']]);
+                    array_push($quantityCards, intval($card['numberOf']));
                 }
-            }
-            foreach ($newCards as $card) {
-                array_push($quantityCards, $card['numberOf']);
             }
             arsort($quantityCards);
             foreach ($quantityCards as $key => $value) {
@@ -171,7 +175,7 @@ class Database
                     break;
                 }
             }
-            return json_encode($newerCards);
+            return $newerCards;
         } catch (PDOException $pdoe) {
             error_log($pdoe->getMessage(), 0);
         }
