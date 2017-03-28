@@ -32,18 +32,6 @@ try {
         }
     }
     echo json_encode($newerCards);
-} catch (PDOException $e) { /* eat it :( */}
-
-/**
- * $array the array of cards
- * $cardId the id of the card to find
- * returns the index of the card, -1 if it isn't found
- */
-function card_exists($array, $cardId) {
-    for ($i = 0; $i < sizeof($array); $i++) {
-        if ($array[$i]["id"] == $cardId) {
-            return $i;
-        }
-    }
-    return -1;
+} catch (PDOException $e) {
+    /* eat it :( */
 }

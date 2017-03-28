@@ -1,6 +1,5 @@
 <?php
 require "admin_functions.php";
-require "mPDO.php";
 include "SqlStatements.php";
 $dbh = createPDO2();
 try {
