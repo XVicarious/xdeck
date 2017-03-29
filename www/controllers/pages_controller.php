@@ -10,6 +10,10 @@ class PagesController
     {
         require_once('views/pages/deck.php');
     }
+    public function card()
+    {
+        require_once('views/pages/card.php');
+    }
     public function format()
     {
         require_once('views/pages/format.php');

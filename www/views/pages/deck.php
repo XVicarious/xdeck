@@ -86,7 +86,7 @@ for ($i = 0; $i < count($cardTypes); $i++) {
 <script>
     var tooltipDeck = '<?php echo $tipDeck; ?>';
     var tooltipSide = '<?php echo $tipSide; ?>';
-    requirejs(['./js/common'], function (common) {
-      requirejs(['app/deck']);
+    requirejs(['/js/common.js'], function (common) {
+      requirejs(['/js/app/deck.js']);
     });
 </script>

@@ -96,6 +96,8 @@ class Database
             AND dck_decks.dck_decks_formatid = :formatId
         WHERE dck_decks_formatid = :formatId';
 
+    const GET_CARD_BY_ID = 'SELECT * FROM cards WHERE id = :cardId';
+
     private static $instance = null;
     private function __construct()
     {
@@ -178,6 +180,18 @@ class Database
             return $newerCards;
         } catch (PDOException $pdoe) {
             error_log($pdoe->getMessage(), 0);
+        }
+    }
+
+    public static function getCard($cardId)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::GET_CARD_BY_ID);
+            $stmt->bindParam(':cardId', $cardId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage(), 0);
         }
     }
 

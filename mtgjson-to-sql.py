@@ -31,10 +31,10 @@ def sql_connect():
   cursor = conn.cursor()
 
   try:
-    cursor.execute('use xdeck;')
+    cursor.execute('use bmaurer_deckvc;')
   except pymysql.err.InternalError:
-    cursor.execute('CREATE DATABASE xdeck;');
-    cursor.execute('use xdeck;')
+    cursor.execute('CREATE DATABASE bmaurer_deckvc;');
+    cursor.execute('use bmaurer_deckvc;')
 
   return conn, cursor
 
@@ -60,7 +60,7 @@ def padDate(date):
   return '"' + date + '"'
 
 def setup_sql_db(cursor):
-  cursor.execute('SHOW TABLES IN xdeck;');
+  cursor.execute('SHOW TABLES IN bmaurer_deckvc;');
   current_tables = cursor.fetchall()
   if ('cards',) not in current_tables:
     cursor.execute("CREATE TABLE cards ("+

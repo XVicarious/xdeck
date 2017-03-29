@@ -23,7 +23,7 @@ require(['jquery', 'moment'], function ($, moment) {
 } */
   /* top cards for pauper */
   var $topPauper = $('#topPauperCards');
-  for (i = 0; i < aTopPauperCards.length; i++) {
+  for (var i = 0; i < aTopPauperCards.length; i++) {
     $topPauper.append(
       '<a href="view_card.html?id=' + aTopPauperCards[i]['id'] +
       '" class="collection-item">' + aTopPauperCards[i]['cardName'] +
