@@ -11,17 +11,21 @@ var ConvertCost = {
     var iStart = '<i class="ms ms-cost ms-shadow ms-'; // the start for the <i> element with the proper classes for displaying the symbols
     var iEnd = '"/>'; // the end of the <i> element
     var lastEndTag = -1;
+    var status = 0;
     var iSplit = ' ms-split'; // for our split symbols
+    string = string.replace(/(\r\n|\n|\r)/gm, '<br />');
     for (var i = 0; i < string.length; i++) { // go over each and every character of the string
       var currentChar = string.charAt(i);
       var nextChar = string.charAt(i + 1);
       if (currentChar === '{') { // if we are starting a new mana symbol
+        status = 1;
         if (i > 0 && lastEndTag < i - 1) { // if our current position is after the last time we ended a tag
           newFangledString += string.substring(lastEndTag + 1, i - 1) + '&nbsp;'; // add everything from the last tag to just before now to our string
         }
       }
-      if (nextChar != null && nextChar === '}') { // this is a short easy one
+      if (nextChar != null && nextChar === '}' && status === 1) { // this is a short easy one
         lastEndTag = i + 1;
+        status = 0;
         if (ConvertCost.colorCodes.indexOf(currentChar) > -1 || (currentChar >= '0' && currentChar <= '9')) { // if the next character is a color, or C, or X, Y, Z, or if its a digit
           if (build.trim()) { // if build has characters in it
             build += currentChar; // add the current character to the build
@@ -36,7 +40,7 @@ var ConvertCost = {
           }
         }
       } else { // it is a long one, take a seat
-        if (idChars.indexOf(currentChar) === -1 && (ConvertCost.colorCodes.indexOf(currentChar) > -1 || (currentChar >= '0' && currentChar <= '9'))) { // if current character isn't one of our markers (/,{,})
+        if (idChars.indexOf(currentChar) === -1 && status === 1 && (ConvertCost.colorCodes.indexOf(currentChar) > -1 || (currentChar >= '0' && currentChar <= '9'))) { // if current character isn't one of our markers (/,{,})
           build += currentChar; // add this character to the build
         }
       }
