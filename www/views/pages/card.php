@@ -20,8 +20,8 @@ print_r($card);
     font-size: 48px;
 }
 .ms, span.card-name {
-    margin-top: 1%;
-    margin-bottom:1%;
+    margin-top: 5%;
+    margin-bottom:5%;
     margin-left:0.1em;
 }
 </style>
@@ -29,13 +29,9 @@ print_r($card);
     <div class="col s12 card-panel lighten-4 <?php echo $color; ?>">
         <div class="container">
             <div class="row">
-                <div class="card-panel card-details">
-                    <div class="col s12 l6">
-                        <span class="name-wrapper flow-text"><?php echo $card['cardName']; ?></span>
-                    </div>
-                    <div class="col s12 l6">
-                        <span class="right mana-cost flow-text"><?php echo $card['manaCost']; ?></span>
-                    </div>
+                <div class="col s12 card-panel card-details">
+                    <span class="name-wrapper flow-text"><?php echo $card['cardName']; ?></span>
+                    <span class="mana-cost flow-text secondary-content"><?php echo $card['manaCost']; ?></span>
                 </div>
             </div>
             <div class="row">
@@ -64,6 +60,18 @@ print_r($card);
                         '<span class="secondary-content">' . $legal . '</span>' .
                         '</div>';
                 echo $item;
+            }
+            ?>
+        </div>
+    </div>
+    <div class="col s6 l8">
+        <div class="collection with-header card-panel grey lighten-5">
+            <div class="collection-header">Recent Decks with <?php echo $card['cardName']; ?></div>
+            <?php
+            foreach (Database::getDecksWithCard($_GET['id']) as $deck) {
+                echo '<a href="/deck/' . $deck['id'] . '" class="collection-item">';
+                //echo '<span>'. $deck['formatName'] . ' ' . $deck['archetypeName'] . '</span>';
+                echo '<span>' . $deck['ddate'] . '</span></a>';
             }
             ?>
         </div>

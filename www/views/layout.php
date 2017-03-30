@@ -9,6 +9,7 @@
     <script>
       requirejs(['/js/common.js'], function (common) {
         require(['jquery', 'handlebars', 'materialize', 'bloodhound', 'typeahead', 'convertcost'], function ($, Handlebars) {
+          $('.twitter-typeahead').hide(0);
           var cardDatabase = new Bloodhound({
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('cardName'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -37,10 +38,18 @@
         }).bind('typeahead:select', function (ev, suggestion) {
             window.location = '/card/' + parseInt(suggestion.id);
         });
-        $('#search').focus(function () {
-            $(this).parent().siblings('.label-icon').css('color', '#444');
+        $('#search-icon').click(function () {
+            $('#search-icon').css('color', '#444');
+            $('.twitter-typeahead').show(400, function () {
+                $(this).css('display', 'block');
+                $('#search').focus();
+            });
+        });
+        $('#search').blur(function () {
+            $('.twitter-typeahead').hide();
         });
           $('.dropdown-button').dropdown();
+          $('.button-collapse').sideNav();
         });
       });
     </script>
@@ -56,18 +65,18 @@
       </ul>
         <nav class="indigo">
             <div class="nav-wrapper">
-                <form>
+                <form id="search-input">
                     <div class="input-field">
-                        <input id="search" class="typeahead" type="search" name="search" required>
-                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                        <i class="material-icons">close</i>
+                        <input id="search" class="typeahead" type="search" name="search">
+                        <label class="label-icon" for="search"><a id="search-icon" href="#!"><i class="material-icons">search</i></a></label>
+                        <i class="material-icons clear-search">close</i>
                     </div>
                 </form>
                 <div class="pull-up">
                     <a class="brand-logo center">Catchy Name Here</a>
-                    <ul class="right hide-on-med-and-down">
-                      <li><a href="/">Home</a></li>
-                      <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Formats<i class="material-icons right">arrow_drop_down</i></a></li>
+                    <ul class="right hide-on-med-and-down navbar">
+                      <li class="clickable"><a href="/">Home</a></li>
+                      <li class="clickable"><a class="dropdown-button" href="#!" data-activates="dropdown1">Formats<i class="material-icons right">arrow_drop_down</i></a></li>
                     </ul>
                 </div>
             </div>

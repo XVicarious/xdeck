@@ -4,7 +4,7 @@
 }
 
 .collection-item {
-    padding-left: 20px !important;
+    padding-left: 20px;
 }
 
 .ms {
@@ -24,8 +24,12 @@
   margin-top: -64px;
 }
 
+.clear-search {
+    display: none !important;
+}
+
 span.twitter-typeahead {
-  display: inherit !important;
+  display: block;
   height: inherit !important;
 }
 
@@ -69,6 +73,9 @@ input.typeahead.tt-input {
 
 .tt-cursor {
   background-color: #8c9eff;
+}
+
+input.tt-input, .clear-search {
 }
 
 input.tt-input:focus {

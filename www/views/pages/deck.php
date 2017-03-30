@@ -1,5 +1,7 @@
 <?php
+require_once('php/CardCompare.php');
 $deck = Database::getDeck($_GET['id']);
+usort($deck, 'CardCompare::compareClassic');
 $deckString = '';
 $sideString = '';
 $deckCount = 0;
@@ -24,7 +26,7 @@ foreach ($deck as $card) {
     if ($card['manaCost'] == null) {
         $card['manaCost'] = '';
     }
-    $editing .= '<a class="collection-item"><span class="badge left left-badge">' .
+    $editing .= '<a href="/card/' . $card['cardid'] . '" class="collection-item"><span class="badge left left-badge">' .
                 $card['numberOf'] . '</span><span>' . $card['cardName'] . '</span>' .
                 '<span class="secondary-content mana-cost">' . $card['manaCost'] . '</span></span></a>';
 }

@@ -98,6 +98,8 @@ class Database
 
     const GET_CARD_BY_ID = 'SELECT * FROM cards WHERE id = :cardId';
 
+    const GET_DECK_WITH_CARD = 'SELECT dck_decks_id AS id, dck_decks_date AS ddate FROM dck_decks LEFT JOIN dck_deckcards ON dck_decks.dck_decks_id = dck_deckcards_deckid AND dck_deckcards_cardid = :cardId';
+
     private static $instance = null;
     private function __construct()
     {
@@ -187,6 +189,18 @@ class Database
     {
         try {
             $stmt = self::getInstance()->prepare(self::GET_CARD_BY_ID);
+            $stmt->bindParam(':cardId', $cardId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage(), 0);
+        }
+    }
+
+    public static function getDecksWithCard($cardId)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::GET_DECK_WITH_CARD);
             $stmt->bindParam(':cardId', $cardId, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
