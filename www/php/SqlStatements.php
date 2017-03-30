@@ -71,7 +71,7 @@ class SqlStatements
      * @param string :query what to search up
      * @var string
      */
-    const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost, cmc, type FROM cards WHERE cardName LIKE :query';
+    const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost, cmc, type FROM cards WHERE cardName LIKE :query LIMIT 20';
 
     /**
      * Get a deck with the given id

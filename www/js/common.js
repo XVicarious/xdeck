@@ -10,6 +10,7 @@ requirejs.config({
     'bootstrap': 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min',
     'bloodhound': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound.min',
     'velocity': 'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min',
+    'handlebars': 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min',
     'cardcompare': 'CardCompare',
     'convertcost': 'ConvertCost'
   },

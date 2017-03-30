@@ -10,6 +10,9 @@ if ($color === 'white') {
 } elseif ($color === '') {
     $color = 'grey';
 }
+if (strpos($card['type'], 'Land') !== false) {
+    $color = 'brown';
+}
 print_r($card);
 ?>
 <style>
@@ -21,34 +24,29 @@ print_r($card);
     margin-bottom:1%;
     margin-left:0.1em;
 }
-.card-details {
-    margin-top: 20px;
-}
 </style>
 <div class="row">
     <div class="col s12 card-panel lighten-4 <?php echo $color; ?>">
-        <div class="row card-details">
-            <div class="col s12 l6">
-                <span class="name-wrapper flow-text"><?php echo $card['cardName']; ?></span>
+        <div class="container">
+            <div class="row">
+                <div class="card-panel card-details">
+                    <div class="col s12 l6">
+                        <span class="name-wrapper flow-text"><?php echo $card['cardName']; ?></span>
+                    </div>
+                    <div class="col s12 l6">
+                        <span class="right mana-cost flow-text"><?php echo $card['manaCost']; ?></span>
+                    </div>
+                </div>
             </div>
-            <div class="col s12 l6">
-                <span class="right mana-cost flow-text"><?php echo $card['manaCost']; ?></span>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col s12 card-panel lighten-4 <?php echo $color; ?>">
-        <div class="row">
-            <div class="container">
+            <div class="row">
                 <div class="col s12 card-panel center grey lighten-5">
                     <span class="flow-text"><?php echo $card['type']; ?></span>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col s12">
-                <span class="flow-text card-text"><?php echo $card['text']; ?></span>
+            <div class="row">
+                <div class="col s12 card-panel grey lighten-5">
+                    <span class="flow-text card-text"><?php echo $card['text']; ?></span>
+                </div>
             </div>
         </div>
     </div>
