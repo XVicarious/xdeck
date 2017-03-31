@@ -26,7 +26,7 @@ foreach ($deck as $card) {
     if ($card['manaCost'] == null) {
         $card['manaCost'] = '';
     }
-    $editing .= '<a href="/card/' . $card['cardid'] . '" class="collection-item"><span class="badge left left-badge">' .
+    $editing .= '<a href="card/' . $card['cardid'] . '" class="collection-item"><span class="badge left left-badge">' .
                 $card['numberOf'] . '</span><span>' . $card['cardName'] . '</span>' .
                 '<span class="secondary-content mana-cost">' . $card['manaCost'] . '</span></span></a>';
 }
@@ -49,10 +49,10 @@ for ($i = 0; $i < count($cardTypes); $i++) {
         <div class="row">
             <div class="col s12">
                 <h4 class="center">
-                    <a id="formatName" href="./?action=format&id=<?php echo $deck[0]['formatId']; ?>">
+                    <a id="formatName" href="format/<?php echo $deck[0]['formatId']; ?>">
                         <?php echo $deck[0]['formatName']; ?>
                     </a>
-                    <a id="archetypeName" href="?action=archetype&id=<?php echo $deck[0]['archetypeId']; ?>">
+                    <a id="archetypeName" href="archetype/<?php echo $deck[0]['archetypeId']; ?>">
                         <?php echo $deck[0]['archetypeName']; ?>
                     </a>
                 </h4>
@@ -88,7 +88,7 @@ for ($i = 0; $i < count($cardTypes); $i++) {
 <script>
     var tooltipDeck = '<?php echo $tipDeck; ?>';
     var tooltipSide = '<?php echo $tipSide; ?>';
-    requirejs(['/js/common.js'], function (common) {
-      requirejs(['/js/app/deck.js']);
+    requirejs(['js/common.js'], function (common) {
+      requirejs(['js/app/deck.js']);
     });
 </script>

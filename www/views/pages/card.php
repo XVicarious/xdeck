@@ -78,7 +78,7 @@ print_r($card);
     </div>
 </div>
 <script>
-requirejs(['/js/common.js'], function (common) {
+requirejs(['js/common.js'], function (common) {
   require(['jquery', 'convertcost'], function ($) {
     $('.mana-cost').html(ConvertCost.parse($('.mana-cost').text()));
     $('.card-text').html(ConvertCost.parse($('.card-text').text()));

@@ -37,7 +37,7 @@ function createPDO($username, $password, $database)
  */
 function createPDO2()
 {
-    return createPDO("root", "root", "xdeck");
+    return createPDO("root", "root", "bmaurer_deckvc");
 }
 
 /**
