@@ -54,14 +54,15 @@ class Database
 
     /**
      * List every deck in the database
-     * todo: add a limit to this, at least as an option
+     * @param int :qLimit the number of decks you want
      * @var string
      */
     const LIST_ALL_DECKS = 'SELECT dck_decks_id AS id, dck_formats_name AS format,
         dck_archetypes_name AS archetype, dck_decks_date AS ddate FROM dck_decks
         LEFT JOIN dck_formats ON dck_decks.dck_decks_formatid = dck_formats.dck_formats_id
         LEFT JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes.dck_archetypes_id
-        ORDER BY dck_decks_date DESC';
+        ORDER BY dck_decks_date DESC
+        LIMIT :qLimit';
 
     /**
      * Autocomplete for the deckbuilder
@@ -98,7 +99,14 @@ class Database
 
     const GET_CARD_BY_ID = 'SELECT * FROM cards WHERE id = :cardId';
 
-    const GET_DECK_WITH_CARD = 'SELECT dck_decks_id AS id, dck_decks_date AS ddate FROM dck_decks LEFT JOIN dck_deckcards ON dck_decks.dck_decks_id = dck_deckcards_deckid AND dck_deckcards_cardid = :cardId';
+    const GET_DECK_WITH_CARD = 'SELECT dck_decks_id AS id, dck_decks_date AS ddate,
+                                       dck_formats_name AS formatName, dck_archetypes_name AS archetypeName
+                                FROM dck_decks
+                                LEFT JOIN dck_formats ON dck_decks.dck_decks_formatid = dck_formats_id
+                                LEFT JOIN dck_archetypes ON dck_decks.dck_decks_archetypeid = dck_archetypes_id
+                                LEFT JOIN dck_deckcards ON dck_decks.dck_decks_id = dck_deckcards_deckid
+                                    WHERE dck_deckcards_cardid = :cardId
+                                ORDER BY dck_decks_date DESC';
 
     private static $instance = null;
     private function __construct()
@@ -173,7 +181,7 @@ class Database
                 }
             }
             arsort($quantityCards);
-            foreach ($quantityCards as $key => $value) {
+            foreach (array_keys($quantityCards) as $key) {
                 array_push($newerCards, $newCards[$key]);
                 if (sizeof($newerCards) == $limit) {
                     break;
@@ -190,6 +198,18 @@ class Database
         try {
             $stmt = self::getInstance()->prepare(self::GET_CARD_BY_ID);
             $stmt->bindParam(':cardId', $cardId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage(), 0);
+        }
+    }
+
+    public static function getLatestDecks($limit = 10)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::LIST_ALL_DECKS);
+            $stmt->bindParam(':qLimit', $limit, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

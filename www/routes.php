@@ -10,10 +10,9 @@ function call($controller, $action)
     $controller->{$action}();
 }
 
-$controllers = array('pages' => ['home', 'error', 'deck', 'format', 'archetype', 'card']);
+$controllers = array('pages' => ['home', 'error', 'deck', 'format', 'card']);
 
 if (array_key_exists($controller, $controllers)) {
-    echo $action;
     if (in_array($action, $controllers[$controller])) {
         call($controller, $action);
     } else {

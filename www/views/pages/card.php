@@ -13,7 +13,7 @@ if ($color === 'white') {
 if (strpos($card['type'], 'Land') !== false) {
     $color = 'brown';
 }
-print_r($card);
+//print_r($card);
 ?>
 <style>
 .large-text {
@@ -70,18 +70,10 @@ print_r($card);
             <?php
             foreach (Database::getDecksWithCard($_GET['id']) as $deck) {
                 echo '<a href="/deck/' . $deck['id'] . '" class="collection-item">';
-                //echo '<span>'. $deck['formatName'] . ' ' . $deck['archetypeName'] . '</span>';
-                echo '<span>' . $deck['ddate'] . '</span></a>';
+                echo '<span>'. $deck['formatName'] . ' ' . $deck['archetypeName'] . '</span>';
+                echo '<span class="secondary-content">' . $deck['ddate'] . '</span></a>';
             }
             ?>
         </div>
     </div>
 </div>
-<script>
-requirejs(['js/common.js'], function (common) {
-  require(['jquery', 'convertcost'], function ($) {
-    $('.mana-cost').html(ConvertCost.parse($('.mana-cost').text()));
-    $('.card-text').html(ConvertCost.parse($('.card-text').text()));
-  });
-});
-</script>

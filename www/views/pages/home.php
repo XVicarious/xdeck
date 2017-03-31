@@ -1,6 +1,13 @@
 <div class="row">
     <div id="recentDecks" class="col s12 collection with-header card-panel">
         <div class="collection-header"><h4>Recent Decks</h4></div>
+        <?php
+        foreach (Database::getLatestDecks() as $deck) {
+            echo '<a class="collection-item" href="/deck/'. $deck['id'] .'/">';
+            echo $deck['format'] . ' ' . $deck['archetype'];
+            echo '<span class="secondary-content">' . $deck['ddate'] . '</span></a>';
+        }
+        ?>
     </div>
 </div>
 <div class="row">

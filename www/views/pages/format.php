@@ -31,8 +31,3 @@
         </div>
     </div>
 </div>
-<script>
-    // requirejs(['/js/common.js'], function (common) {
-    //   requirejs(['/js/app/format.js']);
-    // });
-</script>
