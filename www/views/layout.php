@@ -2,7 +2,7 @@
 <head>
     <title>xdeck</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <link rel="stylesheet" href="css/materialize.min.css">
     <link href="css/mana.min.css" rel="stylesheet">
     <link href="css/extra.css" rel="stylesheet">
 </head>
@@ -43,62 +43,23 @@
             <?php require_once('routes.php'); ?>
         </div>
     </main>
-    <footer>
+    <footer class="page-footer indigo">
+        <div class="container">
+            <div class="row">
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                All original content on this page is &copy; 2016 Brian Maurer and may not be used or reproduced without consent. Wizards of the Coast, Magic: The Gathering, and their logos are trademarks of Wizards of the Coast LLC &copy; 1995 - 2016 Wizards. All rights reserved. xdeck is not affiliated with Wizards of the Coast LLC.
+            </div>
+        </div>
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
     <script>
-    requirejs(['js/common.js'], function (common) {
-        require(['jquery', 'handlebars', 'materialize', 'bloodhound', 'typeahead', 'convertcost'], function ($, Handlebars) {
-            $('.twitter-typeahead').hide(0, function () {
-                $(this).css('display', 'none');
-            });
-            var cardDatabase = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('cardName'),
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                remote: {
-                    url: 'php/list_cards.php?query=%QUERY',
-                    wildcard: '%QUERY',
-                    filter: function (data) {
-                        for (var i = 0; i < data.length; i++) {
-                        data[i]['manaCost'] = ConvertCost.parse(data[i]['manaCost']);
-                        }
-                        return data;
-                    }
-                },
-                limit: 7
-            });
-            $('.typeahead').typeahead({minLength: 3, highlight: true}, {
-                source: cardDatabase,
-                name: 'search',
-                display: 'cardName',
-                limit: 7,
-                templates: {
-                    suggestion: Handlebars.compile(
-                        '<div><span class="flow-text">{{cardName}}</span><span class="flow-text secondary-content search-mana-cost">{{{manaCost}}}</span></div>'
-                    )
-                }
-            }).bind('typeahead:select', function (ev, suggestion) {
-                window.location = 'card/' + parseInt(suggestion.id);
-            });
-            $('#search-icon').click(function () {
-                $('#search-icon').css('color', '#444');
-                $('.twitter-typeahead').show(400, function () {
-                    $(this).css('display', 'block');
-                    $('#search').focus();
-                });
-            });
-            $('#search').blur(function () {
-                $('.twitter-typeahead').hide();
-            });
-            $('.dropdown-button').dropdown();
-            $('.button-collapse').sideNav();
-        });
-    });
-    </script>
-    <script>
     var action = <?php echo (isset($_GET['action']) ? '\''.$_GET['action'].'\'' : '\'home\''); ?>;
-    requirejs(['js/common.js'], function (common) {
-      requirejs(['/js/app/' + action + '.js']);
+    requirejs(['js/common'], function (common) {
+      requirejs(['js/app/search']);
+      requirejs(['js/app/' + action]);
     });
     </script>
 </body>

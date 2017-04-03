@@ -11,6 +11,16 @@
     color: #000;
 }
 
+.large-text {
+    font-size: 48px;
+}
+
+.mana-cost .ms, .card-name {
+    margin-top: 5%;
+    margin-bottom:5%;
+    margin-left:0.1em;
+}
+
 .ms-cost {
   line-height: 1.35em !important;
   height: 1.3em !important;
@@ -25,15 +35,15 @@
 }
 
 .clear-search {
-    display: none !important;
+    display: none;
 }
 
 span.twitter-typeahead {
-  display: block;
+  display: none;
   height: inherit !important;
 }
 
-input.typeahead.tt-input {
+.typeahead.tt-input {
   vertical-align: initial !important;
 }
 
@@ -80,4 +90,8 @@ input.tt-input, .clear-search {
 
 input.tt-input:focus {
   background-color: #fff !important;
+}
+
+.input-field:focus + label a i {
+    color: #444;
 }

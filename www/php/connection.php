@@ -67,9 +67,16 @@ class Database
     /**
      * Autocomplete for the deckbuilder
      * @param string :query what to search up
+     * @param int :qLimit how many cards to limit the search to
      * @var string
      */
-    const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost, cmc, type FROM cards WHERE cardName LIKE :query';
+    const AUTOCOMPLETE_CARDS = 'SELECT id, cardName, manaCost, cmc, type FROM cards
+        WHERE
+            cardName LIKE :query
+            OR cards.text LIKE :query
+        LIMIT :qLimit';
+
+    const ADVANCED_SEARCH = 'SELECT id, cardName, manaCost FROM cards';
 
     /**
      * Get a deck with the given id
@@ -129,8 +136,7 @@ class Database
     public static function getDeck($deckId)
     {
         try {
-            $dbh = self::getInstance();
-            $stmt = $dbh->prepare(self::GET_DECK_BY_ID);
+            $stmt = self::getInstance()->prepare(self::GET_DECK_BY_ID);
             $stmt->bindParam(':deckId', $deckId, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -148,7 +154,6 @@ class Database
     public static function getTopCards($formatId, $types = [], $limit = 10)
     {
         try {
-            $dbh = self::getInstance();
             $query = self::GET_TOP_CARDS_FORMAT;
             if (!empty($types)) {
                 $query .= ' AND (';
@@ -161,7 +166,7 @@ class Database
                 }
                 $query .= ')';
             }
-            $stmt = $dbh->prepare($query);
+            $stmt = self::getInstance()->prepare($query);
             $stmt->bindParam(':formatId', $formatId, PDO::PARAM_INT);
             $stmt->execute();
             $cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -222,6 +227,39 @@ class Database
         try {
             $stmt = self::getInstance()->prepare(self::GET_DECK_WITH_CARD);
             $stmt->bindParam(':cardId', $cardId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage(), 0);
+        }
+    }
+
+    public static function queryForCards($query, $limit = 20)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::AUTOCOMPLETE_CARDS);
+            $query = '%' . $query . '%';
+            $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+            $stmt->bindParam(':qLimit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage(), 0);
+        }
+    }
+
+    public static function queryForCardsAdvanced($query, $limit = 20)
+    {
+        $query = explode(' ', $query);
+        $builtQuery = '';
+        foreach ($query as $qItem) {
+            if (strpos($qItem, 'manaCost:')) {
+                $builtQuery .= 'manaCost LIKE %' . substr(9) . '%';
+            }
+        }
+        $finalQuery = self::ADVANCED_SEARCH . ' WHERE ' . $builtQuery;
+        try {
+            $stmt = self::getInstance()->prepare($finalQuery);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

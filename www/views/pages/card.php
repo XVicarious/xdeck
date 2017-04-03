@@ -15,16 +15,6 @@ if (strpos($card['type'], 'Land') !== false) {
 }
 //print_r($card);
 ?>
-<style>
-.large-text {
-    font-size: 48px;
-}
-.ms, span.card-name {
-    margin-top: 5%;
-    margin-bottom:5%;
-    margin-left:0.1em;
-}
-</style>
 <div class="row">
     <div class="col s12 card-panel lighten-4 <?php echo $color; ?>">
         <div class="container">
