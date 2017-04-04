@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="css/materialize.min.css">
     <link href="css/mana.min.css" rel="stylesheet">
     <link href="css/extra.css" rel="stylesheet">
+    <meta name="theme-color" content="#3f51b5">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body class="indigo lighten-4">
     <header>
