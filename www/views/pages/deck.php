@@ -1,5 +1,7 @@
 <?php
 require_once('php/CardCompare.php');
+use \xdeck\Database;
+
 $deck = Database::getDeck($_GET['id']);
 usort($deck, 'CardCompare::compareClassic');
 $deckString = '';
@@ -45,43 +47,39 @@ for ($i = 0; $i < count($cardTypes); $i++) {
 }
 ?>
 <div class="row">
-    <div class="col s12 card-panel">
-        <div class="row">
-            <div class="col s12">
-                <h4 class="center">
+    <div class="col s12 m12 l8">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
                     <a id="formatName" href="/format/<?php echo $deck[0]['formatId']; ?>">
                         <?php echo $deck[0]['formatName']; ?>
                     </a>
                     <a id="archetypeName" href="/archetype/<?php echo $deck[0]['archetypeId']; ?>">
                         <?php echo $deck[0]['archetypeName']; ?>
                     </a>
-                </h4>
+                </span>
+                <div id="deck" class="collection with-header">
+                    <div class="collection-header">Mainboard
+                        <span id="deckcount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom">
+                            <?php echo $deckCount; ?>
+                        </span>
+                    </div>
+                    <?php echo $deckString; ?>
+                </div>
+                <div id="sideboard" class="collection with-header">
+                    <div class="collection-header">Sideboard
+                        <span id="sidecount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom">
+                            <?php echo $sideCount; ?>
+                        </span>
+                    </div>
+                    <?php echo $sideString; ?>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col s12"><a id="deckDate" class="center"></a></div><!-- todo: Fix centering of date -->
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col s12 card-panel">
-        <div>
-            <div id="deck" class="collection with-header">
-                <div class="collection-header">Mainboard
-                    <span id="deckcount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom">
-                        <?php echo $deckCount; ?>
-                    </span>
-                </div>
-                <?php echo $deckString; ?>
-            </div>
-            <div id="sideboard" class="collection with-header">
-                <div class="collection-header">Sideboard
-                    <span id="sidecount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom">
-                        <?php echo $sideCount; ?>
-                    </span>
-                </div>
-                <?php echo $sideString; ?>
-            </div>
+    <div class="col s12 m12 l4">
+        <div class="collection with-header card-panel">
+            <div class="collection-header">Recent <?php echo $deck[0]['formatName']; ?> <?php echo $deck[0]['archetypeName']; ?> Decks</div>
         </div>
     </div>
 </div>

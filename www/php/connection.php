@@ -1,5 +1,12 @@
 <?php
 
+namespace xdeck;
+
+require_once('card.php');
+
+use xdeck\containers;
+use \PDO;
+
 class Database
 {
 
@@ -115,6 +122,10 @@ class Database
                                     WHERE dck_deckcards_cardid = :cardId
                                 ORDER BY dck_decks_date DESC';
 
+    const GET_FORMAT_NAME = 'SELECT dck_formats_name AS name FROM dck_formats WHERE dck_formats_id = :itemId';
+
+    const GET_ARCHETYPE_NAME = 'SELECT dck_archetypes_name AS name FROM dck_archetypes WHERE dck_archetypes_id = :itemId';
+
     private static $instance = null;
     private function __construct()
     {
@@ -131,6 +142,28 @@ class Database
             self::$instance = new PDO('mysql:host=localhost;dbname=bmaurer_deckvc', 'root', 'root', $pdo_options);
         }
         return self::$instance;
+    }
+
+    public static function getFormatName($formatId)
+    {
+        return self::getNameById($formatId, self::GET_FORMAT_NAME);
+    }
+
+    public static function getArchetypeName($archetypeId)
+    {
+        return self::getNameById($archetypeId, self::GET_ARCHETYPE_NAME);
+    }
+
+    private static function getNameById($itemId, $query)
+    {
+        try {
+            $stmt = self::getInstance()->prepare($query);
+            $stmt->bindParam(':itemId', $itemId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC)['name'];
+        } catch (PDOException $e) {
+            error_log($e->getMessage(), 0);
+        }
     }
 
     public static function getDeck($deckId)
@@ -178,12 +211,12 @@ class Database
                 if ($index > -1) {
                     $newCards[$index]['numberOf'] += intval($card['numberOf']);
                     $quantityCards[$index] += intval($card['numberOf']);
-                } else {
-                    array_push($newCards, ['id'=>intval($card['id']),
-                                           'numberOf'=>intval($card['numberOf']),
-                                           'cardName'=>$card['cardName']]);
-                    array_push($quantityCards, intval($card['numberOf']));
+                    continue;
                 }
+                array_push($newCards, ['id'=>intval($card['id']),
+                                       'numberOf'=>intval($card['numberOf']),
+                                       'cardName'=>$card['cardName']]);
+                array_push($quantityCards, intval($card['numberOf']));
             }
             arsort($quantityCards);
             foreach (array_keys($quantityCards) as $key) {
@@ -198,18 +231,28 @@ class Database
         }
     }
 
+    /**
+     * @param int $cardId the card to get information for
+     * @return string[] the card and it's various attributes
+     * @todo make a card object
+     */
     public static function getCard($cardId)
     {
         try {
             $stmt = self::getInstance()->prepare(self::GET_CARD_BY_ID);
             $stmt->bindParam(':cardId', $cardId, PDO::PARAM_INT);
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return new containers\Card($stmt->fetch(PDO::FETCH_ASSOC));
         } catch (PDOException $e) {
             error_log($e->getMessage(), 0);
         }
     }
 
+    /**
+     * @param int $limit limit the number of decks to return
+     * @return string[][] the latests $limit decks posted
+     * @todo make a deck object
+     */
     public static function getLatestDecks($limit = 10)
     {
         try {
@@ -222,6 +265,11 @@ class Database
         }
     }
 
+    /**
+     * @param int $cardId id of the card to look for in decks
+     * @return string[][] an array of decks with the various attributes
+     * @todo make a deck object
+     */
     public static function getDecksWithCard($cardId)
     {
         try {
@@ -234,6 +282,11 @@ class Database
         }
     }
 
+    /**
+     * @param string $query the card name being searched for, surrounded with %
+     * @param int $limit the number of results to return
+     * @param string[][] an array of cards in an array
+     */
     public static function queryForCards($query, $limit = 20)
     {
         try {
@@ -257,9 +310,10 @@ class Database
                 $builtQuery .= 'manaCost LIKE %' . substr(9) . '%';
             }
         }
-        $finalQuery = self::ADVANCED_SEARCH . ' WHERE ' . $builtQuery;
+        $finalQuery = self::ADVANCED_SEARCH . ' WHERE ' . $builtQuery . ' LIMIT :qLimit';
         try {
             $stmt = self::getInstance()->prepare($finalQuery);
+            $stmt->bindParam(':qLimit', $limit, PDO::PARAM_INT);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -270,7 +324,7 @@ class Database
     /**
      * @param string[] $array the array of cards
      * @param int      $cardId the id of the card to find
-     * @return int     $i index of the card, -1 if it isn't found
+     * @return int     index of the card, -1 if it isn't found
      */
     private static function cardExists($array, $cardId)
     {
