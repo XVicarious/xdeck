@@ -1,24 +1,25 @@
-var ConvertCost = {
-  colorCodes: ['W', 'U', 'B', 'R', 'G', 'C', 'X', 'Y', 'Z', 'P', 'T', 'S', '∞', 'h', 'r', 'w'],
+const ConvertCost = {
+  colorCodes: ['W', 'U', 'B', 'R', 'G', 'C', 'X', 'Y',
+               'Z', 'P', 'T', 'S', '∞', 'h', 'r', 'w'],
   // todo: this needs support for infinity symbols, and tap symbols
-  parse: function (string) {
-    var idChars = ['/', '{', '}', '(', ')']; // characters we don't want to add to our build
+  parse: function(string) {
+    const idChars = ['/', '{', '}', '(', ')']; // characters we don't want to add to our build
     if (string == null || !string.trim()) { // if the string is null or empty
       return ''; // we are already done, return an empty string
     }
-    var newFangledString = ''; // our new mana cost representation
-    var build = ''; // for our longer identifiers we need to build up to it
-    var iStart = '<i class="ms ms-cost ms-shadow ms-'; // the start for the <i> element with the proper classes for displaying the symbols
-    var iEnd = '"/>'; // the end of the <i> element
-    var hEnd = ''; // used in cases of half mana
-    var lastEndTag = -1;
-    var status = 0;
-    var iSplit = ' ms-split'; // for our split symbols
+    let newFangledString = ''; // our new mana cost representation
+    let build = ''; // for our longer identifiers we need to build up to it
+    const iStart = '<i class="ms ms-cost ms-shadow ms-'; // the start for the <i> element with the proper classes for displaying the symbols
+    const iEnd = '"/>'; // the end of the <i> element
+    let hEnd = ''; // used in cases of half mana
+    let lastEndTag = -1;
+    let status = 0;
+    const iSplit = ' ms-split'; // for our split symbols
     string = string.replace(/(\r\n|\n|\r)/gm, '<br/>'); // convert various newlines to html newlines
-    for (var i = 0; i < string.length; i++) { // go over each and every character of the string
-      var currentChar = string.charAt(i);
+    for (let i = 0; i < string.length; i++) { // go over each and every character of the string
+      let currentChar = string.charAt(i);
       if (idChars.indexOf(currentChar) !== -1 || ConvertCost.colorCodes.indexOf(currentChar) !== -1 || (currentChar >= '0' && currentChar <= '9')) {
-        var nextChar = string.charAt(i + 1);
+        let nextChar = string.charAt(i + 1);
         if (currentChar === '{' || currentChar === '(' || currentChar === ')') { // if we are starting a new mana symbol
           if (currentChar === '{') {
             status = 1;
@@ -72,5 +73,5 @@ var ConvertCost = {
     }
     newFangledString += string.substring(lastEndTag + 1); // we are done, so add the rest of the string to our final product
     return newFangledString; // the final mana cost, each symbol is an <i> tag with the proper classes from ManaCSS
-  }
+  },
 };

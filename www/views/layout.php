@@ -58,8 +58,8 @@
     </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
     <script>
-    var action = <?php echo (isset($_GET['action']) ? '\''.$_GET['action'].'\'' : '\'home\''); ?>;
-    requirejs(['js/common'], function (common) {
+    const action = <?php echo (isset($_GET['action']) ? '\''.$_GET['action'].'\'' : '\'home\''); ?>;
+    requirejs(['js/common'], function(common) {
       requirejs(['js/app/search']);
       requirejs(['js/app/' + action]);
     });

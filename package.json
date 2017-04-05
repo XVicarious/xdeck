@@ -6,6 +6,6 @@
   "repository": "https://github.com/xvicarious/xdeck",
   "license": "",
   "standard": {
-    "globals": [ "CardCompare", "ConvertCost", "requirejs", "$", "Bloodhound" ]
+    "globals": [ "requirejs", "require" ]
   }
 }
