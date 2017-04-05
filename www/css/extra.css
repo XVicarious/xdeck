@@ -34,6 +34,10 @@
   margin-top: -64px;
 }
 
+i.material-icons {
+    user-select: none;
+}
+
 .clear-search {
     display: none;
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require(['jquery', 'moment'], function($, moment) {
   $.get('php/list_decks.php', {id: 0}, function(data) {
     data = JSON.parse(data);
@@ -13,4 +14,7 @@ require(['jquery', 'moment'], function($, moment) {
       );
     }
   });
+=======
+require(['jquery', 'moment'], function ($, moment) {
+>>>>>>> 95825237baf054af740768b89b89e79c2b90954f
 });
