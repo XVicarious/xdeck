@@ -1,3 +1,15 @@
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+#deck-page { display: none }
+
 .left-badge {
     margin-left: 0;
     margin-right: 14px;

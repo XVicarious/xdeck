@@ -18,6 +18,14 @@ class PagesController
     {
         require_once('views/pages/format.php');
     }
+    public function import()
+    {
+        require_once('views/pages/import.php');
+    }
+    public function mtgoimport()
+    {
+        require_once('views/pages/mtgoimport.php');
+    }
     public function error()
     {
         require_once('views/pages/error.php');

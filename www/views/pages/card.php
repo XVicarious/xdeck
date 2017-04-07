@@ -50,6 +50,7 @@ if (count($card->colors) > 1) {
                 <div class="collection with-header card-panel grey lighten-5">
                     <div class="collection-header">Legality</div>
                     <?php
+                    echo 'testing';
                     foreach ($card->legality as $format) {
                         $legal = ($format[1] === 0) ? 'Banned' : ($format[1] === 1 ? 'Legal' : 'Not Legal');
                         $item = '<div class="collection-item">' .

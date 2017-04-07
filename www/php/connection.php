@@ -31,10 +31,10 @@ class Database
      * @param bool :isSideboard if the card is in the sideboard
      * @var string
      */
-    const INSERT_CARD_INTO_DECK = 'INSERT INTO dck_deckcards
+    /**const INSERT_CARD_INTO_DECK = 'INSERT INTO dck_deckcards
         (dck_deckcards_deckid, dck_deckcards_cardid,
          dck_deckcards_quantity, dck_deckcards_sideboard)
-         VALUES (:deckId, :cardId, :cardQuantity, :isSideboard);';
+         VALUES (:deckId, :cardId, :cardQuantity, :isSideboard);';*/
 
     /**
      * Lists all decks of archetype in format
@@ -126,7 +126,24 @@ class Database
 
     const GET_ARCHETYPE_NAME = 'SELECT dck_archetypes_name AS name FROM dck_archetypes WHERE dck_archetypes_id = :itemId';
 
+    const INSERT_EVENT = 'INSERT IGNORE INTO dck_tournaments (dck_tournaments_name, dck_tournaments_date) VALUES (:tName, :tDate);
+                          SELECT dck_tournaments_id FROM dck_tournaments WHERE (dck_tournaments_name = :tName AND dck_tournaments_date = :tDate);';
+
+    const INSERT_USER = 'INSERT IGNORE INTO dck_users (dck_users_name) VALUES (:uName);
+                         SELECT dck_users_id FROM dck_users WHERE (dck_users_name = :uName);';
+
+    const INSERT_ARCHETYPE = 'INSERT IGNORE INTO dck_archetypes (dck_archetypes_name) VALUES (:aName);
+                              SELECT dck_archetypes_id FROM dck_archetypes WHERE (dck_archetypes_name = :aName)';
+
+    const GET_FORMATS = 'SELECT dck_formats_id AS id, dck_formats_name AS name FROM dck_formats';
+
+    const GET_ARCHETYPES = 'SELECT dck_archetypes_id AS id, dck_archetypes_name AS name FROM dck_archetypes';
+
+    const INSERT_CARD_INTO_DECK = 'INSERT INTO dck_deckcards (dck_deckcards_cardid, dck_deckcards_deckid, dck_deckcards_quantity, dck_deckcards_sideboard)
+                                   SELECT cards.id, :deckId, :numberOf, :sideboard FROM cards WHERE card.cardName = :cardName';
+
     private static $instance = null;
+
     private function __construct()
     {
     }
@@ -142,6 +159,108 @@ class Database
             self::$instance = new PDO('mysql:host=localhost;dbname=bmaurer_deckvc', 'root', 'root', $pdo_options);
         }
         return self::$instance;
+    }
+
+    public static function insertDeck($userId, $tournamentId, $formatId, $archetypeId, $deck)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::INSERT_NEW_DECK);
+            $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+            $stmt->bindParam(':tournamentId', $tournamentId, PDO::PARAM_INT);
+            $stmt->bindParam(':formatId', $formatId, PDO::PARAM_INT);
+            $stmt->bindParam(':archetypeId', $archetypeId, PDO::PARAM_INT);
+            $stmt->execute();
+            $deck_id = self::getInstance()->lastInsertId();
+            foreach ($deck as $card) {
+                $stmt = self::getInstance()->prepare(self::INSERT_CARD_INTO_DECK);
+                $stmt->bindParam(':deckId', $deck_id, PDO::PARAM_INT);
+                $stmt->bindParam(':numberOf', $card[0], PDO::PARAM_INT);
+                $stmt->bindParam(':sideboard', $card[2], PDO::PARAM_BOOL);
+                $stmt->bindParam(':cardName', $card[1], PDO::PARAM_STR);
+                $stmt->execute();
+            }
+            return $deck_id;
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $username user to insert
+     * @return int id of the inserted user, 0 if there was a problem
+     */
+    public static function insertUser($username)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::INSERT_USER);
+            $stmt->bindParam(':uName', $username, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC)['dck_users_id'];
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        return 0;
+    }
+
+    public static function getArchetypes()
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::GET_ARCHETYPES);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        return [];
+    }
+
+    public static function getFormats()
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::GET_FORMATS);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        return [];
+    }
+
+    /**
+     * @param string $archetypeName name of the archetype to insert
+     * @return int id of the inserted archetype, 0 if there was a problem
+     */
+    public static function insertArchetype($archetypeName)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::INSERT_ARCHETYPE);
+            $stmt->bindParam(':aName', $archetypeName, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC)['dck_archetypes_id'];
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+        }
+        return 0;
+    }
+
+    /**
+     * @param string $eventName name of the event
+     * @param string $eventDate date of the tournament, probably in YYYY-MM-DD format
+     * @return int id of the inserted event, 0 if there was a problem
+     */
+    public static function insertEvent($eventName, $eventDate)
+    {
+        try {
+            $stmt = self::getInstance()->prepare(self::INSERT_EVENT);
+            $stmt->bindParam(':tName', $eventName, PDO::PARAM_STR);
+            $stmt->bindParam(':tDate', $eventDate, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC)['dck_tournaments_id'];
+        } catch (Exception $e) {
+            error_log($e->getMessage(), 0);
+        }
+        return 0;
     }
 
     public static function getFormatName($formatId)

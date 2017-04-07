@@ -1,9 +1,9 @@
 <?php
 $hostname = gethostname();
 if (strcmp($hostname, 'gator3074.hostgator.com') === 0) {
-    $base = 'https://xvss.net/devel/xdeck/';
+    $base = '/devel/xdeck/';
 } elseif (strcmp($hostname, 'XVSS-HERMES') === 0) {
-    $base = '\/~xvicarious\/';
+    $base = '/~xvicarious/';
 } else {
     $base = '/';
 }
@@ -54,11 +54,11 @@ if (!isset($_GET['action'])) {
             </div>
             <div class="nav-content">
                 <ul class="tabs tabs-transparent">
-                    <li class="tab"><a href="/" class="<?php echo $homeActive; ?>" target="_self">Home</a></li>
-                    <li class="tab"><a href="/format/1/" class="<?php echo $format1Active; ?>" target="_self">Modern</a></li>
-                    <li class="tab"><a href="/format/2/" class="<?php echo $format2Active; ?>" target="_self">Pauper</a></li>
-                    <li class="tab"><a href="/format/3/" class="<?php echo $format3Active; ?>" target="_self">Standard</a></li>
-                    <li class="tab"><a href="/format/4/" class="<?php echo $format4Active; ?>" target="_self">Legacy</a></li>
+                    <li class="tab"><a href="./" class="<?php echo $homeActive; ?>" target="_self">Home</a></li>
+                    <li class="tab"><a href="format/1/" class="<?php echo $format1Active; ?>" target="_self">Modern</a></li>
+                    <li class="tab"><a href="format/2/" class="<?php echo $format2Active; ?>" target="_self">Pauper</a></li>
+                    <li class="tab"><a href="format/3/" class="<?php echo $format3Active; ?>" target="_self">Standard</a></li>
+                    <li class="tab"><a href="format/4/" class="<?php echo $format4Active; ?>" target="_self">Legacy</a></li>
                 </ul>
             </div>
         </nav>

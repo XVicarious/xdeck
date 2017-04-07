@@ -10,7 +10,7 @@ function call($controller, $action)
     $controller->{$action}();
 }
 
-$controllers = array('pages' => ['home', 'error', 'deck', 'format', 'card']);
+$controllers = array('pages' => ['home', 'error', 'deck', 'format', 'card', 'import', 'mtgoimport']);
 
 if (array_key_exists($controller, $controllers)) {
     if (in_array($action, $controllers[$controller])) {
