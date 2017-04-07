@@ -25,16 +25,17 @@ def sql_connect():
   hostname = my_file.readline().strip()
   username = my_file.readline().strip()
   password = my_file.readline().strip()
+  database = my_file.readline().strip()
   my_file.close()
 
   conn = pymysql.connect(host=hostname,user=username,passwd=password,use_unicode=True,charset='utf8')
   cursor = conn.cursor()
 
   try:
-    cursor.execute('use bmaurer_deckvc;')
+    cursor.execute('use ' + database + ';')
   except pymysql.err.InternalError:
-    cursor.execute('CREATE DATABASE bmaurer_deckvc;');
-    cursor.execute('use bmaurer_deckvc;')
+    cursor.execute('CREATE DATABASE ' + database + ';');
+    cursor.execute('use ' + database + ';')
 
   return conn, cursor
 
@@ -119,10 +120,9 @@ def parseCards(data, cursor):
     for card in _set['cards']:
       try:
         if card['name'] not in parsed_cards:
-          sql_command = 'INSERT INTO cards (layout, cardName, otherName, manaCost, cmc, colors, type, text, power, toughness, loyalty, hand, life, reserved, vintage, legacy, modern, standard, commander) VALUES ("%s", "%s", %s, %s, %s, %s, "%s", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'%(
+          sql_command = 'INSERT INTO card_card (layout, cardName, manaCost, cmc, colors, type, text, power, toughness, loyalty, reserved, vintage, legacy, modern, standard, commander) VALUES ("%s", "%s", %s, %s, %s, "%s", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'%(
             card['layout'],
             card['name'].replace('"','\\"'),
-            '"' + parseList(card['names']) + '"' if 'names' in card.keys() else "NULL",
             '"' + card['manaCost'] + '"' if 'manaCost' in card.keys() else "NULL",
             card['cmc'] if 'cmc' in card.keys() else 0,
             '"' + parseList(card['colors']) + '"' if 'colors' in card.keys() else "NULL",
@@ -131,9 +131,7 @@ def parseCards(data, cursor):
             '"' + card['power'] + '"' if 'power' in card.keys() else "NULL",
             '"' + card['toughness'] + '"' if 'toughness' in card.keys() else "NULL",
             card['loyalty'] if 'loyalty' in card.keys() else "NULL",
-            card['hand'] if 'hand' in card.keys() else "NULL",
-            card['life'] if 'life' in card.keys() else "NULL",
-            card['reserved'] if 'reserved' in card.keys() else "NULL",
+            card['reserved'] if 'reserved' in card.keys() else False,
             legalIn(card,'Vintage'),
             legalIn(card,'Legacy'),
             legalIn(card,'Modern'),
@@ -141,25 +139,6 @@ def parseCards(data, cursor):
             legalIn(card,'Commander'),)
           cursor.execute(sql_command)
           parsed_cards += [card['name']]
-        sql_command = 'INSERT INTO card_set_info VALUES ("%s", "%s", "%s", %s, "%s", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, "%s");'%(
-          card['name'].replace('"','\\"'),
-          _set['name'].replace('"','\\"'),
-          card['rarity'],
-          '"' + card['flavor'].replace('"','\\"') + '"' if 'flavor' in card.keys() else "NULL",
-          card['artist'],
-          '"' + card['number'] + '"'  if 'number' in card.keys() else "NULL",
-          card['multiverseid'] if 'multiverseid' in card.keys() else "NULL",
-          '"' + parseList(card['variations']) + '"'  if 'variations' in card.keys() else "NULL",
-          '"' + card['watermark'] + '"'  if 'watermark' in card.keys() else "NULL",
-          '"' + card['border'] + '"'  if 'border' in card.keys() else '"' + _set['border'] + '"',
-          card['timeshifted'] if 'timeshifted' in card.keys() else "NULL",
-          padDate(card['releaseDate']) if 'releaseDate' in card.keys() else padDate(_set['releaseDate']),
-          card['starter'] if 'starter' in card.keys() else "NULL",
-          '"' + card['originalText'].replace('"','\\"') + '"'  if 'originalText' in card.keys() else "NULL",
-          '"' + card['originalType'] + '"'  if 'originalType' in card.keys() else "NULL",
-          '"' + card['source'] + '"'  if 'source' in card.keys() else "NULL",
-          card['imageName'])
-        #cursor.execute(sql_command)
       except Exception as e:
         print(card)
         print('Error -->',e)
@@ -170,8 +149,8 @@ download_mtgjson()
 #warnings.filterwarnings('error')
 conn, cursor = sql_connect()
 data = load_mtgjson()
-drop_sql_tables(cursor);
-setup_sql_db(cursor)
+#drop_sql_tables(cursor);
+#setup_sql_db(cursor)
 #parseSets(data, cursor)
 parseCards(data, cursor)
 quit(conn)
