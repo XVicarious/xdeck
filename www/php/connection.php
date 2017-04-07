@@ -6,6 +6,7 @@ require_once('card.php');
 
 use xdeck\containers;
 use \PDO;
+use \PDOException;
 
 class Database
 {
@@ -126,21 +127,21 @@ class Database
 
     const GET_ARCHETYPE_NAME = 'SELECT dck_archetypes_name AS name FROM dck_archetypes WHERE dck_archetypes_id = :itemId';
 
-    const INSERT_EVENT = 'INSERT IGNORE INTO dck_tournaments (dck_tournaments_name, dck_tournaments_date) VALUES (:tName, :tDate);
-                          SELECT dck_tournaments_id FROM dck_tournaments WHERE (dck_tournaments_name = :tName AND dck_tournaments_date = :tDate);';
+    const INSERT_EVENT = 'INSERT IGNORE INTO dck_tournaments (dck_tournaments_name, dck_tournaments_date) VALUES (:tName, :tDate)';
+    const SELECT_EVENT = 'SELECT dck_tournaments_id FROM dck_tournaments WHERE (dck_tournaments_name LIKE :tName AND dck_tournaments_date LIKE :tDate);';
 
-    const INSERT_USER = 'INSERT IGNORE INTO dck_users (dck_users_name) VALUES (:uName);
-                         SELECT dck_users_id FROM dck_users WHERE (dck_users_name = :uName);';
+    const INSERT_USER = 'INSERT IGNORE INTO dck_users (dck_users_name) VALUES (:uName)';
+    const SELECT_USER = 'SELECT dck_users_id FROM dck_users WHERE dck_users_name LIKE :uName;';
 
-    const INSERT_ARCHETYPE = 'INSERT IGNORE INTO dck_archetypes (dck_archetypes_name) VALUES (:aName);
-                              SELECT dck_archetypes_id FROM dck_archetypes WHERE (dck_archetypes_name = :aName)';
+    const INSERT_ARCHETYPE = 'INSERT IGNORE INTO dck_archetypes (dck_archetypes_name) VALUES (:aName)';
+    const SELECT_ARCHETYPE = 'SELECT dck_archetypes_id FROM dck_archetypes WHERE dck_archetypes_name LIKE :aName;';
 
-    const GET_FORMATS = 'SELECT dck_formats_id AS id, dck_formats_name AS name FROM dck_formats';
+    const GET_FORMATS = 'SELECT dck_formats_id AS id, dck_formats_name AS name FROM dck_formats;';
 
-    const GET_ARCHETYPES = 'SELECT dck_archetypes_id AS id, dck_archetypes_name AS name FROM dck_archetypes';
+    const GET_ARCHETYPES = 'SELECT dck_archetypes_id AS id, dck_archetypes_name AS name FROM dck_archetypes;';
 
     const INSERT_CARD_INTO_DECK = 'INSERT INTO dck_deckcards (dck_deckcards_cardid, dck_deckcards_deckid, dck_deckcards_quantity, dck_deckcards_sideboard)
-                                   SELECT cards.id, :deckId, :numberOf, :sideboard FROM cards WHERE card.cardName = :cardName';
+                                   SELECT id, :deckId, :numberOf, :sideboard FROM cards WHERE cardName LIKE :cardName;';
 
     private static $instance = null;
 
@@ -196,8 +197,15 @@ class Database
             $stmt = self::getInstance()->prepare(self::INSERT_USER);
             $stmt->bindParam(':uName', $username, PDO::PARAM_STR);
             $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_ASSOC)['dck_users_id'];
+            $stmt = self::getInstance()->prepare(self::SELECT_USER);
+            $stmt->bindParam(':uName', $username, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC)['dck_users_id'];
+            return $result;
         } catch (Exception $e) {
+            error_log($e->getMessage());
+            error_log($stmt->errorCode());
+        } catch (PDOException $e) {
             error_log($e->getMessage());
         }
         return 0;
@@ -237,6 +245,9 @@ class Database
             $stmt = self::getInstance()->prepare(self::INSERT_ARCHETYPE);
             $stmt->bindParam(':aName', $archetypeName, PDO::PARAM_STR);
             $stmt->execute();
+            $stmt = self::getInstance()->prepare(self::SELECT_ARCHETYPE);
+            $stmt->bindParam(':aName', $archetypeName, PDO::PARAM_STR);
+            $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC)['dck_archetypes_id'];
         } catch (Exception $e) {
             error_log($e->getMessage());
@@ -253,6 +264,10 @@ class Database
     {
         try {
             $stmt = self::getInstance()->prepare(self::INSERT_EVENT);
+            $stmt->bindParam(':tName', $eventName, PDO::PARAM_STR);
+            $stmt->bindParam(':tDate', $eventDate, PDO::PARAM_STR);
+            $stmt->execute();
+            $stmt = self::getInstance()->prepare(self::SELECT_EVENT);
             $stmt->bindParam(':tName', $eventName, PDO::PARAM_STR);
             $stmt->bindParam(':tDate', $eventDate, PDO::PARAM_STR);
             $stmt->execute();

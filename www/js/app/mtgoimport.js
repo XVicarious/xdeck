@@ -13,6 +13,7 @@ const CARD_ROW = 'span.row';
 const MAIN_DECK = 'div.sorted-by-overview-container ' + CARD_ROW;
 const SIDE_CLASS = '.sorted-by-sideboard-container';
 const SIDE_DECK = 'div' + SIDE_CLASS + ' ' + CARD_ROW;
+console.log(SIDE_DECK);
 require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
   let dunFuckedUp = false;
   const WIZARDS = 'http://magic.wizards.com';
@@ -22,17 +23,20 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
     formats = new Bloodhound({
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: {
+      prefetch: {
         url: 'php/get_formats.php',
       },
     });
+    // formats.clearPrefetchCache();
+    formats.initialize();
     archetypes = new Bloodhound({
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
-      remote: {
+      prefetch: {
         url: 'php/get_archetypes.php',
       },
     });
+    archetypes.initialize();
   } catch (excp) {
     console.error('It dun fucked up.');
     return;
@@ -68,13 +72,14 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
                     source: formats,
                     display: 'name',
                   }).blur(function() {
-                    for (let i = 0; i < formats.datums.length; i++) {
-                      if ($(this).val() === formats.datums[i].name) {
-                        $(this).attr('format', formats.datums[i].id);
+                    const $this = $(this);
+                    formats.search($this.val(), function(results) {
+                      if (results.length === 1) {
+                        $this.attr('format', results[0].id);
                         return;
                       }
-                    }
-                    $(this).attr('format', 0);
+                      $this.attr('format', 0);
+                    });
                   });
                 } catch (expr) {
                   console.error('typeahead dun fucked up.');
@@ -90,21 +95,22 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
                                         // back to the beginning of that text
                                         // and then back one more
                                         .text();
-                  username = username.strip().substring(0, username.length - 5)
-                                             .strip();
+                  username = username.trim().substring(0, username.length - 5)
+                                             .trim();
                   $locallist.append('<span>' + username + '</span>');
                   try {
-                    $(this).find('.typeahead.archetype').typeahead({
+                    $locallist.find('.typeahead.archetype').typeahead({
                       source: archetypes,
                       display: 'name',
                     }).blur(function() {
-                      for (let i = 0; i < archetypes.datums.length; i++) {
-                        if ($(this).val() === archetypes.datums[i].name) {
-                          $(this).attr('archetype', archetypes.datums[i].id);
+                      const $this = $(this);
+                      archetypes.search($this.val(), function(results) {
+                        if (results.length === 1) {
+                          $this.attr('archetype', results[0].id);
                           return;
                         }
-                      }
-                      $(this).attr('archetype', 0);
+                        $this.attr('archetype', 0);
+                      });
                     });
                   } catch (expr) {
                     console.error('typeahead dun fucked up.');
@@ -117,7 +123,7 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
                     let cardname = $(this).find('.card-name').text();
                     let count = parseInt($(this).find('.card-count').text());
                     let isSideboard = $(this).parent()
-                                             .hasClass(SIDE_CLASS);
+                                             .hasClass(SIDE_CLASS.substring(1));
                     let line = (isSideboard ? 'SB:' : '') +
                                count + ' ' + cardname;
                     $deckarea.val($deckarea.val() + line + '\n');
@@ -143,11 +149,11 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
   });
   $(document).on('click', '.s', function() {
     const $thisParent = $(this).parent();
-    if ($thisParent.find('.format').val() === '' || $thisParent.find('.typeahead.format').attr('format') == 0) {
-      console.error($thisParent, 'needs a format! or this one isn\'t valid');
+    if ($thisParent.find('.format.tt-input').val() === '' || $thisParent.find('.typeahead.format.tt-input').attr('format') == 0) {
+      console.error('A format is NEEDED! The given one is ' + $thisParent.find('.tt-input').val());
       return;
     }
-    let formatId = parseInt($thisParent.find('.format').attr('format'));
+    let formatId = parseInt($thisParent.find('.format.tt-input').attr('format'));
     const eventName = $thisParent.find('.event-name').text();
     const eventDate = $thisParent.find('.event-date').text();
     let eventId;
@@ -170,20 +176,22 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
       return;
     }
     $thisParent.find('.deck').each(function() {
-      if ($(this).find('.archetype').val() === '') {
+      if ($(this).find('.archetype.tt-input').val() === '') {
         console.error($(this), 'needs an archetype!');
         return;
       } else if ($(this).find('textarea').val() === '') {
         console.error($(this), 'needs cards in the deck!');
         return;
       }
-      let archetypeId = parseInt($(this).find('.archetype').attr('archetype'));
+      let archetypeId = parseInt($(this).find('.archetype.tt-input').attr('archetype'));
+      console.log('186: ' + archetypeId);
       if (archetypeId === 0) {
         $.ajax({
           url: 'php/insert_archetype.php',
-          data: {name: $(this).find('.archetype').val()},
+          data: {name: $(this).find('.archetype.tt-input').val()},
           async: false,
           success: function(data) {
+            console.log('193 (data): ' + data);
             data = parseInt(data);
             if (Number.isInteger(data)) {
               archetypeId = data;
@@ -197,6 +205,7 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
           return;
         }
       }
+      return;
       const username = $(this).find('span').text();
       let userId = 0;
       $.ajax({
