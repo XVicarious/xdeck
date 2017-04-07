@@ -7,5 +7,4 @@ $tournamentId = (int) $_GET['tournament'];
 $formatId = (int) $_GET['format'];
 $archetypeId = (int) $_GET['archetype'];
 $deck = $_GET['deck'];
-
 echo Database::insertDeck($userId, $tournamentId, $formatId, $archetypeId, $deck);

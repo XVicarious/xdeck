@@ -1,19 +1,23 @@
-const decklistTemplate = '<div class="deck">' +
-                           '<div class="input-field">' +
-                             '<input type="text" class="typeahead archetype">' +
+const decklistTemplate = '<div class="row"><div class="col s12">' +
+                           '<div class="deck card-panel grey lighten-3">' +
+                             '<div class="input-field">' +
+                               '<input type="text" ' +
+                                      'class="typeahead archetype">' +
+                             '</div>' +
                            '</div>' +
-                         '</div>';
-const eventTemplate = '<div class="card-panel">' +
-                        '<div class="input-field">' +
-                           '<input type="text" class="typeahead format">' +
+                         '</div></div>';
+const eventTemplate = '<div class="row"><div class="col s12">' +
+                        '<div class="event card-panel">' +
+                          '<div class="input-field">' +
+                             '<input type="text" class="typeahead format">' +
+                          '</div>' +
                         '</div>' +
-                      '</div>';
+                      '</div></div>';
 const ARTICLE_CLASS = '.article-item-extended';
 const CARD_ROW = 'span.row';
 const MAIN_DECK = 'div.sorted-by-overview-container ' + CARD_ROW;
 const SIDE_CLASS = '.sorted-by-sideboard-container';
 const SIDE_DECK = 'div' + SIDE_CLASS + ' ' + CARD_ROW;
-console.log(SIDE_DECK);
 require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
   let dunFuckedUp = false;
   const WIZARDS = 'http://magic.wizards.com';
@@ -61,10 +65,12 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
               success: function(data) {
                 const $event = $(data);
                 const $eventSection = $(eventTemplate).appendTo('#decklists');
-                $eventSection.append('<span class="event-name">' +
+                $eventSection.find('.event')
+                             .append('<span class="event-name">' +
                                         $event.find('#main-content h1').text() +
                                      '</span>');
-                $eventSection.append('<span class="event-date">' +
+                $eventSection.find('.event')
+                             .append('<span class="event-date">' +
                                         eventDate.format('YYYY-MM-DD') +
                                       '</span>');
                 try {
@@ -87,17 +93,13 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
                 }
                 $event.find('.bean--wiz-content-deck-list').each(function() {
                   const $locallist = $(decklistTemplate)
-                                       .appendTo($eventSection);
-                  let username = $(this).find('.deck-meta h4')
-                                        // fixme:
-                                        // usernames can contain spaces :(
-                                        // all decks are 5-0, so perhaps count
-                                        // back to the beginning of that text
-                                        // and then back one more
-                                        .text();
+                                       .appendTo($eventSection.find('.event'));
+                  let username = $(this).find('.deck-meta h4').text();
                   username = username.trim().substring(0, username.length - 5)
                                              .trim();
-                  $locallist.append('<span>' + username + '</span>');
+                  $locallist.find('.deck').append('<span>' +
+                                                     username +
+                                                  '</span>');
                   try {
                     $locallist.find('.typeahead.archetype').typeahead({
                       source: archetypes,
@@ -117,7 +119,7 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
                     return;
                   }
                   const $deckarea = $('<textarea></textarea>')
-                                      .appendTo($locallist);
+                                      .appendTo($locallist.find('.deck'));
                   let $decklist = $(this).find('.deck-list-text');
                   $decklist.find(MAIN_DECK + ',' + SIDE_DECK).each(function() {
                     let cardname = $(this).find('.card-name').text();
@@ -125,11 +127,18 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
                     let isSideboard = $(this).parent()
                                              .hasClass(SIDE_CLASS.substring(1));
                     let line = (isSideboard ? 'SB:' : '') +
-                               count + ' ' + cardname;
+                                count + ' ' + cardname;
                     $deckarea.val($deckarea.val() + line + '\n');
                   });
                 });
-                $eventSection.append('<a class="btn-large s">Submit Decks</a>');
+                $eventSection.find('.event')
+                             .append('<div class="row">' +
+                                       '<div class="col s12 center">' +
+                                         '<a class="btn-large s">' +
+                                           'Submit Decks' +
+                                         '</a>' +
+                                       '</div>' +
+                                     '</div>');
               },
             });
             if (dunFuckedUp) {
@@ -148,12 +157,15 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
     }
   });
   $(document).on('click', '.s', function() {
-    const $thisParent = $(this).parent();
-    if ($thisParent.find('.format.tt-input').val() === '' || $thisParent.find('.typeahead.format.tt-input').attr('format') == 0) {
-      console.error('A format is NEEDED! The given one is ' + $thisParent.find('.tt-input').val());
+    const $thisParent = $(this).parent().parent().parent();
+    if ($thisParent.find('.format.tt-input').val() === '' ||
+        $thisParent.find('.typeahead.format.tt-input').attr('format') == 0) {
+      console.error('A format is NEEDED! The given one is ' +
+                     $thisParent.find('.tt-input').val());
       return;
     }
-    let formatId = parseInt($thisParent.find('.format.tt-input').attr('format'));
+    let formatId = parseInt($thisParent.find('.format.tt-input')
+                                       .attr('format'));
     const eventName = $thisParent.find('.event-name').text();
     const eventDate = $thisParent.find('.event-date').text();
     let eventId;
@@ -183,15 +195,14 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
         console.error($(this), 'needs cards in the deck!');
         return;
       }
-      let archetypeId = parseInt($(this).find('.archetype.tt-input').attr('archetype'));
-      console.log('186: ' + archetypeId);
+      let archetypeId = parseInt($(this).find('.archetype.tt-input')
+                                        .attr('archetype'));
       if (archetypeId === 0) {
         $.ajax({
           url: 'php/insert_archetype.php',
           data: {name: $(this).find('.archetype.tt-input').val()},
           async: false,
           success: function(data) {
-            console.log('193 (data): ' + data);
             data = parseInt(data);
             if (Number.isInteger(data)) {
               archetypeId = data;
@@ -205,7 +216,6 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
           return;
         }
       }
-      return;
       const username = $(this).find('span').text();
       let userId = 0;
       $.ajax({
@@ -241,6 +251,8 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
         name = name.trim();
         deck.push([numberOf, name, isSideboard]);
       }
+      return; // fixme: Cards don't even get put into the database at all,
+              // only decks are created.
       let deckId;
       $.get('php/import_mtgo.php', {deck: deck,
                                     tournament: eventId,

@@ -176,7 +176,7 @@ class Database
                 $stmt = self::getInstance()->prepare(self::INSERT_CARD_INTO_DECK);
                 $stmt->bindParam(':deckId', $deck_id, PDO::PARAM_INT);
                 $stmt->bindParam(':numberOf', $card[0], PDO::PARAM_INT);
-                $stmt->bindParam(':sideboard', $card[2], PDO::PARAM_BOOL);
+                $stmt->bindParam(':sideboard', (bool) $card[2], PDO::PARAM_BOOL);
                 $stmt->bindParam(':cardName', $card[1], PDO::PARAM_STR);
                 $stmt->execute();
             }

@@ -3,6 +3,7 @@ require_once('php/CardCompare.php');
 use \xdeck\Database;
 
 $deck = Database::getDeck($_GET['id']);
+
 usort($deck, 'CardCompare::compareClassic');
 $deckString = '';
 $sideString = '';
