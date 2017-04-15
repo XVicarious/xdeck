@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col s12 m12 l8">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">
+                    <a id="formatName" href="/format/{{ deck.format.id }}/">
+                        {{ deck.format.name }}
+                    </a>
+                    <a id="archetypeName" href="/archetype/{{ deck.format.id }}/{{ deck.archetype.id }}/">
+                        {{ deck.archetype.name }}
+                    </a>
+                </span>
+                <div id="deck" class="collection with-header">
+                    <div class="collection-header">Mainboard
+                        <span id="deckcount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom">
+                            {{ deck.main_count }}
+                        </span>
+                    </div>
+                    {% for card in cards %}
+                        <a href="/card/{{ card.card.id }}/" class="collection-item">
+                            <span class="badge left">{{ card.numberOf }}</span>
+                            <span>{{ card.card.cardName }}</span>
+                            <span class="secondary-content mana-cost">{{ card.card.html_cost | safe }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+                <div id="sideboard" class="collection with-header">
+                    <div class="collection-header">Sideboard
+                        <span id="sidecount" class="badge new tooltipped" data-badge-caption="cards" data-position="bottom">
+                            {{ deck.side_count }}
+                        </span>
+                    </div>
+                    {% for card in side %}
+                        <a href="/card/{{ card.card.id }}/" class="collection-item">
+                            <span class="badge left">{{ card.numberOf }}</span>
+                            <span>{{ card.card.cardName }}</span>
+                            <span class="secondary-content mana-cost">{{ card.card.html_cost | safe }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12 l4">
+        <div class="collection with-header card-panel">
+            <div class="collection-header">Recent {{ deck.format.name }} {{ deck.archetype.name }} Decks</div>
+        </div>
+    </div>
+</div>
+<script>
+    var tooltipDeck = '';
+    var tooltipSide = '';
+</script>
+{% endblock %}

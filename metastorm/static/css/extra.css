@@ -1,0 +1,113 @@
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+#deck-page { display: none }
+
+.left-badge {
+    margin-left: 0;
+    margin-right: 14px;
+}
+
+.collection-item {
+    padding-left: 20px;
+}
+
+.ms {
+    color: #000;
+}
+
+.large-text {
+    font-size: 48px;
+}
+
+.mana-cost .ms, .card-name {
+    margin-top: 5%;
+    margin-bottom:5%;
+    margin-left:0.1em;
+}
+
+.ms-cost {
+  line-height: 1.35em !important;
+  height: 1.3em !important;
+}
+
+.reminder {
+  font-style: italic;
+}
+
+.pull-up {
+  margin-top: -64px;
+}
+
+i.material-icons {
+    user-select: none;
+}
+
+.clear-search {
+    display: none;
+}
+
+span.twitter-typeahead {
+  display: none;
+  height: inherit !important;
+}
+
+.typeahead.tt-input {
+  vertical-align: initial !important;
+}
+
+.input-field .twitter-typeahead + label:after {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 65px;
+  opacity: 0;
+  transition: 0.2s opacity ease-out, 0.2s color ease-out;
+}
+
+.input-field .twitter-typeahead ~ .material-icons {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  color: transparent;
+  cursor: pointer;
+  font-size: 2rem;
+  transition: 0.3s color;
+}
+
+.input-field .twitter-typeahead + label {
+  left: 1rem;
+}
+
+.tt-menu.tt-open {
+  width: 100%;
+  background-color: #fff;
+  color: #444;
+}
+
+.tt-suggestion {
+  padding-left: 4rem;
+  padding-right: 2rem;
+}
+
+.tt-cursor {
+  background-color: #8c9eff;
+}
+
+input.tt-input, .clear-search {
+}
+
+input.tt-input:focus {
+  background-color: #fff !important;
+}
+
+.input-field:focus + label a i {
+    color: #444;
+}

@@ -32,8 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'card.apps.CardConfig',
-    'format.apps.FormatConfig',
-    'archetype.apps.ArchetypeConfig',
+    'meta.apps.MetaConfig',
     'event.apps.EventConfig',
     'brewer.apps.BrewerConfig',
     'deck.apps.DeckConfig',
@@ -113,14 +112,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATIC_ROOT = ''
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = (os.path.join('static'),)
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': 'C:\\users\\bmaurer\\desktop\\xdeck\\metastorm\\metastorm\\my.cnf',
+            'read_default_file': '/home/xvicarious/repositories/xdeck/metastorm/metastorm/my.cnf',
         },
     },
 }
