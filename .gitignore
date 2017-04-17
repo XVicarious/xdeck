@@ -2,5 +2,4 @@
 *.bak
 *.cfg
 *.pyc
-metastorm/*/migrations/*
 AllSets-x.json
