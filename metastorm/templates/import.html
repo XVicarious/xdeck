@@ -1,0 +1,23 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 l2">
+        <div class="card-panel">
+            <div class="row">
+                <div class="col s12 center">
+                    <a class="btn">Scrape</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 l10">
+    </div>
+</div>
+{% endblock %}
+
+{% block pagescript %}
+<script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/app/mtgoimport.js' %}"></script>
+{% endblock %}

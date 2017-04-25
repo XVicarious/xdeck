@@ -36,8 +36,11 @@ INSTALLED_APPS = [
     'event.apps.EventConfig',
     'brewer.apps.BrewerConfig',
     'deck.apps.DeckConfig',
-    'django.contrib.admin',
+    'dal',
+    'dal_select2',
+    'django.contrib.admin.apps.SimpleAdminConfig',
     'django.contrib.auth',
+    'adminplus',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -120,7 +123,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '/home/xvicarious/repositories/xdeck/metastorm/metastorm/my.cnf',
+            'read_default_file': os.path.join(BASE_DIR, 'metastorm\\my.cnf').replace('\\', '/'),
         },
     },
 }

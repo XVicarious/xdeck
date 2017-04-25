@@ -6,11 +6,12 @@ requirejs.config({
     'bootstrap': 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/js/bootstrap.min',
     'velocity': 'https://cdnjs.cloudflare.com/ajax/libs/velocity/1.5.0/velocity.min',
     'handlebars': 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min',
-    'jquery': 'jquery-3.2.0',
-    'typeahead': 'typeahead.jquery',
-    'bloodhound': 'bloodhound',
-    'convertcost': 'ConvertCost',
-    'cardcompare': 'CardCompare',
+    'jquery': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min',
+    'typeahead': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min',
+    'bloodhound': 'https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/bloodhound',
+    'hammerjs': 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min',
+    // 'convertcost': 'ConvertCost',
+    // 'cardcompare': 'CardCompare',
   },
   'shim': {
     materialize: {

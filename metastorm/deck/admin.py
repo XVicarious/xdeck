@@ -1,10 +1,18 @@
 from dal import autocomplete
 from django import forms
 from django.contrib import admin
+from django.shortcuts import render_to_response
 
 from .models import Deck, DeckCard
 from brewer.models import Brewer
 from card.models import Card
+
+def ImportView(request, *args, **kwargs):
+    return render_to_response('import.html')
+admin.site.register_view('import', view=ImportView)
+
+def __load_mtgo_stuff():
+    pass
 
 class CardAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
@@ -29,7 +37,6 @@ class DeckCardInline(admin.TabularInline):
             kwargs['queryset'] = Card.objects.order_by("cardName")
         return super(DeckCardInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
-@admin.register(Deck)
 class DeckAdmin(admin.ModelAdmin):
     list_display = ['get_deck_name', 'get_brewer',]
     inlines = [DeckCardInline]
@@ -44,3 +51,5 @@ class DeckAdmin(admin.ModelAdmin):
         return obj.brewer.name
     get_deck_name.short_description = 'Deck Name'
     get_brewer.short_description = 'Brewer'
+
+admin.site.register(Deck, DeckAdmin)

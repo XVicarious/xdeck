@@ -28,7 +28,7 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       prefetch: {
-        url: 'php/get_formats.php',
+        url: '/meta/format/json',
       },
     });
     // formats.clearPrefetchCache();
@@ -37,11 +37,12 @@ require(['jquery', 'moment', 'bloodhound', 'typeahead'], function($, moment) {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       prefetch: {
-        url: 'php/get_archetypes.php',
+        url: '/meta/archetype/json',
       },
     });
     archetypes.initialize();
   } catch (excp) {
+    console.error(excp);
     console.error('It dun fucked up.');
     return;
   }
