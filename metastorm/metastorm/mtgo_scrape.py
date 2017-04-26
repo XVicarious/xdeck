@@ -1,6 +1,11 @@
 from lxml import html
 import requests
 import time
+from meta.models import Archetype, Format
+from event.models import Event
+from brewer.models import Brewer
+from deck.models import Deck, DeckCard
+from card.models import Card
 
 WIZARDS = "http://magic.wizards.com"
 MTGO_LISTS = "/en/content/deck-lists-magic-online-products-game-info"
@@ -18,6 +23,9 @@ for event in events:
     event_tree = html.fromstring(event_page.content)
     decks = event_tree.xpath("//div[@class='deck-group']")
     event_name = event_tree.xpath("//div[@id='main-content']/h1/text()")
+    if (Event.objects.filter(name=event_name, date=date).exists()):
+        print("It exists!")
+        break
     for deck in decks:
         deck_list = []
         brewer = deck.xpath("span[@class='deck-meta']/h4/text()")[0]
@@ -27,4 +35,11 @@ for event in events:
         for card in deck_subs:
             numberOf = card.xpath("span[@class='card-count']/text()")[0]
             cardName = card.xpath("span[@class='card-name']/a/text()")[0]
+            deck_list.append([numberOf, cardName, False])
+        side_subs = sideboard_element.xpath("div[contains(@class, 'element')/span[@class='row']]")
+        for side in side_subs:
+            numberOf = side.xpath("span[@class='card-count']/text()")[0]
+            cardName = side.xpath("span[@class='card-name']/a/text()")[0]
+            deck_list.append([numberOf, cardName, True])
+
     break
