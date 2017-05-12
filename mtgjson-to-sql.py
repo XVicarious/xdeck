@@ -120,7 +120,7 @@ def parseCards(data, cursor):
     for card in _set['cards']:
       try:
         if card['name'] not in parsed_cards:
-          sql_command = 'INSERT INTO card_card (layout, cardName, manaCost, cmc, colors, type, text, power, toughness, loyalty, reserved, vintage, legacy, modern, standard, commander) VALUES ("%s", "%s", %s, %s, %s, "%s", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'%(
+          sql_command = 'INSERT IGNORE INTO card_card (layout, cardName, manaCost, cmc, colors, type, text, power, toughness, loyalty, reserved, vintage, legacy, modern, standard, commander) VALUES ("%s", "%s", %s, %s, %s, "%s", %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'%(
             card['layout'],
             card['name'].replace('"','\\"'),
             '"' + card['manaCost'] + '"' if 'manaCost' in card.keys() else "NULL",
@@ -143,6 +143,7 @@ def parseCards(data, cursor):
         print(card)
         print('Error -->',e)
         traceback.print_exc()
+        print(sql_command)
         exit()
 
 download_mtgjson()
