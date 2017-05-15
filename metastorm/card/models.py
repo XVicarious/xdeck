@@ -16,7 +16,7 @@ class Card(models.Model):
     text = models.TextField(null=True)
     power = models.CharField(max_length=255, null=True)
     toughness = models.CharField(max_length=255, null=True)
-    loyalty = models.IntegerField(null=True)
+    loyalty = models.CharField(max_length=255, null=True)
     reserved = models.BooleanField()
     vintage = SetCharField(base_field=models.CharField(max_length=50), size=1, max_length=50, null=True)
     legacy = SetCharField(base_field=models.CharField(max_length=50), size=1, max_length=50, null=True)
