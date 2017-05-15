@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 
-from .models import Card
+from .models import Card, CardToken, CardToToken
 from deck.models import Deck, DeckCard
 
 TAG_CHARS = ['/', '{', '}', '(', ')']
@@ -25,3 +25,11 @@ def detail(request, card_id):
     except DeckCard.DoesNotExist:
         pass
     return render(request, 'card.html', {'card': card, 'recent_decks': recent_decks})
+
+def token(request, token_id):
+    try:
+        tkn = CardToken.objects.get(pk=token_id)
+        relatedCards = CardToToken.objects.filter(token_id=tkn)
+    except CardToken.DoesNotExist:
+        pass
+    return render(request, 'token.html', {'token': tkn, 'related_cards': relatedCards});

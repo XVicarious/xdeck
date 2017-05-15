@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'event.apps.EventConfig',
     'brewer.apps.BrewerConfig',
     'deck.apps.DeckConfig',
-    'tokens.apps.TokensConfig',
     'dal',
     'dal_select2',
     'django.contrib.admin.apps.SimpleAdminConfig',

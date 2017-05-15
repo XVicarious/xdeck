@@ -1,0 +1,69 @@
+{% extends "site.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col s12 m12 l8">
+        <div class="card-panel lighten-4"><!-- Card's Color -->
+            <div class="container">
+                <div class="row">
+                    <div class="col s12 card-panel card-details">
+                        <span class="name-wrapper flow-text">{{ token.name }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 card-panel center grey lighten-5">
+                        <span class="flow-text">{{ token.type }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12 card-panel grey lighten-5">
+			    <span class="flow-text card-text">{{ token.html_text | safe }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col s12 m12 l4">
+        <div class="row">
+            <div class="col s12">
+                <div class="collection with-header card-panel grey lighten-5">
+                    <div class="collection-header">Cards that create {{ token.name }}</div>
+                    {% for card in related_cards %}
+                        <a href="/card/{{ card.card.id }}/" class="collection-item">
+                            <span>{{ card.card.cardName }}</span>
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                <div class="collection with-header card-panel grey lighten-5">
+                    {# todo: do this automagically, in case a new format is added #}
+                    <div class="collection-header">Legality</div>
+                    <div class="collection-item">
+                        <span>Vintage</span>
+                        <span class="secondary-content">{{ card.vintage }}</span>
+                    </div>
+                    <div class="collection-item">
+                        <span>Legacy</span>
+                        <span class="secondary-content">{{ card.legacy }}</span>
+                    </div>
+                    <div class="collection-item">
+                        <span>Modern</span>
+                        <span class="secondary-content">{{ card.modern }}</span>
+                    </div>
+                    <div class="collection-item">
+                        <span>Standard</span>
+                        <span class="secondary-content">{{ card.standard }}</span>
+                    </div>
+                    <div class="collection-item">
+                        <span>Commander</span>
+                        <span class="secondary-content">{{ card.commander }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

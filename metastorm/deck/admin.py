@@ -50,13 +50,14 @@ def _load_mtgo_stuff():
                 format_id = Format.objects.get(name=p_format)
             except Exception as e:
                 continue
-        # We ran into a big issue
+        # We ran into a big issue, skip this one
         if (format_id == 0):
-            print("Format ID is 0")
-            return 0
+            continue
         # Check if the event exists already, if not create it and get the id
         try:
             event_obj = Event.objects.get(name__exact=event_name, format__exact=format_id, date__exact=event_date)
+            if event_obj:
+                continue
         except Exception:
             event_obj = Event(name=event_name, format=format_id, date=event_date)
             event_obj.save()
@@ -66,6 +67,7 @@ def _load_mtgo_stuff():
             deck_list = []
             brewer = deck.xpath("span[@class='deck-meta']/h4/text()")[0]
             brewer = brewer[:len(brewer)-6]
+            print(event_name + ' ' + brewer)
             try:
                 brewer_obj = Brewer.objects.get(name=brewer)
             except Exception:
@@ -81,6 +83,8 @@ def _load_mtgo_stuff():
             for card in deck_subs:
                 numberOf = card.xpath("span[@class='card-count']/text()")[0]
                 cardName = card.xpath("span[@class='card-name']/a/text()")[0]
+                if '//' in cardName:
+                    cardName = cardName.split('//')[0].strip()
                 try:
                     card_obj = Card.objects.get(cardName=cardName)
                 except Exception as err:
@@ -89,10 +93,12 @@ def _load_mtgo_stuff():
                     new_deck.delete()
                     return
                 deck_list.append(DeckCard(deck=new_deck, card=card_obj, numberOf=numberOf, isSideboard=False))
-            side_subs = sideboard_element.xpath("div[contains(@class, 'element')]/span[@class='row']")
+            side_subs = sideboard_element.xpath("span[contains(@class, 'row')]")
             for side in side_subs:
                 numberOf = side.xpath("span[@class='card-count']/text()")[0]
                 cardName = side.xpath("span[@class='card-name']/a/text()")[0]
+                if '//' in cardName:
+                    cardName = cardName.split('//')[0].strip()
                 try:
                     card_obj = Card.objects.get(cardName=cardName)
                 except Exception:
@@ -121,15 +127,15 @@ class DeckCardForm(forms.ModelForm):
 
 class DeckCardInline(admin.TabularInline):
     model = DeckCard
-    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
-        """Enable ordering drop-down alphabetically."""
-        if db_field.name == 'card':
-            kwargs['queryset'] = Card.objects.order_by("cardName")
-        return super(DeckCardInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+    #def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+    #    """Enable ordering drop-down alphabetically."""
+    #    if db_field.name == 'card':
+    #        kwargs['queryset'] = Card.objects.order_by("cardName")
+    #    return super(DeckCardInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 class DeckAdmin(admin.ModelAdmin):
     list_display = ['get_deck_name', 'get_brewer', ]
-    inlines = [DeckCardInline]
+    #inlines = [DeckCardInline]
     def get_format(self, obj):
         return obj.format.name
     def get_archetype(self, obj):

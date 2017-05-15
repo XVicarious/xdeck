@@ -1,0 +1,16 @@
+{% extends "site.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col s12 collection with-header card-panel">
+            <div class="collection-header">Recent Decks</div>
+            {% for deck in recent_decks %}
+                <a href="/deck/{{ deck.id }}/" class="collection-item">
+                    {{ deck.format.name }} {{ deck.archetype.name }} by {{ deck.brewer.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
